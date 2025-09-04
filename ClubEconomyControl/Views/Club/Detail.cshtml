@@ -1,0 +1,87 @@
+﻿@using ClubEconomyControl.Models
+@model Club
+
+
+
+
+<section class="text-center mb-4">
+	<h2>@Html.DisplayFor(p => p.Name)</h2>
+	<ul class="d-inline-block text-start">
+		<li>Balance: @Model.Balance</li>
+		<li>Limite Salarial: @Model.SquadLimitEconomy</li>
+	</ul>
+</section>
+<section class="d-flex flex-row justify-content-center">
+	<div>
+
+		<h4>Datos Económicos</h4>
+		<!--Poner tipo de gasto y Cantidad, después proban en BBDD-->
+		@if (Model.OrdinaryExpenses != null && Model.OrdinaryExpenses.Any())
+		{
+			<p>Ingresos Ordinarios</p>
+			<ul>
+				@foreach (var ordinaryIncome in Model.OrdinaryIncomes)
+				{
+					<li>@Html.DisplayFor(Model => ordinaryIncome.Type): @ordinaryIncome.Amount</li>
+				}
+			</ul>
+		}
+		else
+		{
+			<p>No hay ingresos ordinarios</p>
+		}
+		@if (Model.OrdinaryExpenses != null && Model.OrdinaryExpenses.Any())
+		{
+			<p>Gastos Ordinarios</p>
+			<ul>
+				@foreach (var ordinaryExpense in Model.OrdinaryExpenses)
+				{
+					<li>@Html.DisplayFor(Model => ordinaryExpense.Type) : @ordinaryExpense.Amount</li>
+				}
+			</ul>
+		}
+		else
+		{
+			<p>No hay gastos ordinarios</p>
+		}
+		@if (Model.ExtraordinaryIncomes != null && Model.ExtraordinaryIncomes.Any())
+		{
+			<p>Ingresos Extraordinarios</p>
+			<ul>
+				@foreach (var extraordinaryIncome in Model.ExtraordinaryIncomes)
+				{
+					<li>@Html.DisplayFor(Model => extraordinaryIncome.Type): @extraordinaryIncome.Amount</li>
+				}
+			</ul>
+		}
+		else
+		{
+			<p>No hay ingresos extraordinarios</p>
+		}
+		@if (Model.ExtraordinaryExpenses != null && Model.ExtraordinaryExpenses.Any())
+		{
+			<p>Gastos Extraordinarios</p>
+			<ul>
+				@foreach (var extraordinaryExpense in Model.ExtraordinaryExpenses)
+				{
+					<li>@Html.DisplayFor(Model => extraordinaryExpense.Type): @extraordinaryExpense.Amount</li>
+				}
+			</ul>
+		}
+		else
+		{
+			<p>No hay gastos extraordinarios</p>
+		}
+	</div>
+	<div class="mx-4">
+		<h4>Jugadores en plantilla</h4>
+		@if (Model.Players != null)
+		{
+			<p>@Model.Players.Count</p>
+		}
+		else
+		{
+			<p>No hay jugadores en plantilla</p>
+		}
+	</div>
+</section>

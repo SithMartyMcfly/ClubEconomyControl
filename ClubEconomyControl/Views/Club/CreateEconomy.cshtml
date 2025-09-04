@@ -1,0 +1,76 @@
+﻿@using ClubEconomyControl.Models;
+<!--Hay que tipar con el modelo los atributos
+	vamos a usar un viewModel para importar todos
+	los modelos que influyen en esta vista
+-->
+@model ClubEconomyControl.Models.ViewModels.EconomyViewModel;
+
+<!--Vamos a hacer un formulario por cada tipo de concepto que se enviará al método SaveEconomy del controlador Club-->
+	<form asp-action="SaveEconomy" method="post">
+	<input type="hidden" asp-for="ClubId" /><!--Añadimos el id como campo oculto-->
+		<div class="form-group">
+			<label asp-for="NewOrdinaryIncome.Type" class="control-label">Ingreso Ordinario
+			</label>
+			<!--Añadimos el método GetEnumSelectList para que añada en las opciones los tipos del Enum
+				Vamos a ayudarnos del atributo que hemos creado en el EconomyViewModel para guardar el 
+				nuevo concepto, que quedará añadido a la lista-->
+				<select asp-for="NewOrdinaryIncome.Type" class="form-control" asp-items="Html.GetEnumSelectList<OrdinaryIncomeType>()">
+					<option value="">-- Selecciona un tipo --</option>
+				</select>
+			<span asp-validation-for="NewOrdinaryIncome.Type" class="text-danger"></span>
+			<input asp-for="NewOrdinaryIncome.Amount"/>
+			<br />
+			<button type="submit" class="btn btn-success my-2">Añadir Concepto</button>
+		</div>
+	</form>
+
+	<form asp-action="SaveEconomy" method="post">
+	<input type="hidden" asp-for="ClubId" /><!--Añadimos el id como campo oculto-->
+		<div class="form-group">
+			<label asp-for="NewOrdinaryExpense.Type" class="control-label">
+				Gasto Ordinario
+			</label>
+			<select asp-for="NewOrdinaryExpense.Type" class="form-control" asp-items="Html.GetEnumSelectList<OrdinaryExpenseType>()">
+				<option value="">-- Selecciona un tipo --</option>
+			</select>
+			<span asp-validation-for="NewOrdinaryExpense.Type" class="text-danger"></span>
+			<input asp-for="NewOrdinaryExpense.Amount" />
+			<br />
+			<button class="btn btn-success my-2">Añadir Concepto</button>
+		</div>
+	</form>
+
+	<form asp-action="SaveEconomy" method="post">
+	<input type="hidden" asp-for="ClubId" /><!--Añadimos el id como campo oculto-->
+		<div class="form-group">
+			<label asp-for="NewExtraordinaryIncome.Type" class="control-label">
+				Ingreso Extraordinario
+			</label>
+			<select asp-for="NewExtraordinaryIncome.Type" class="form-control" asp-items="Html.GetEnumSelectList<ExtraordinaryIncomeType>()">
+				<option value="">-- Selecciona un tipo --</option>
+			</select>
+			<span asp-validation-for="NewExtraordinaryIncome.Type" class="text-danger"></span>
+			<input asp-for="NewExtraordinaryIncome.Amount" />
+			<br />
+			<button class="btn btn-success my-2">Añadir Concepto</button>
+		</div>
+	</form>
+
+	<form asp-action="SaveEconomy" method="post">
+	<input type="hidden" asp-for="ClubId" /><!--Añadimos el id como campo oculto-->
+		<div class="form-group">
+			<label asp-for="NewExtraordinaryExpense.Type" class="control-label">
+				Gasto Extraordinario
+			</label>
+			<select asp-for="NewExtraordinaryExpense.Type" class="form-control" asp-items="Html.GetEnumSelectList<ExtraordinaryExpensetype>()">
+				<option value="">-- Selecciona un tipo --</option>
+			</select>
+			<span asp-validation-for="NewExtraordinaryExpense.Type" class="text-danger"></span>
+			<input asp-for="NewExtraordinaryExpense.Amount" />
+			<br />
+			<button class="btn btn-success my-2">Añadir Concepto</button>
+		</div>
+	</form>
+
+	
+

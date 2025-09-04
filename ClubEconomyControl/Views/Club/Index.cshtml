@@ -1,0 +1,38 @@
+﻿@model List<ClubEconomyControl.Models.Club>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<h1>Lista de Clubes</h1>
+
+<a class="btn btn-success my-4" asp-action="CreateClub" asp-controller="Club">Crear Club</a>
+@foreach (var club in Model)
+{
+<main class="d-flex flex-row justify-content-between">
+    <div class="mx-2">
+			<a
+                asp-action="Detail"
+                asp-controller="Club"
+                asp-route-id="@club.Id">
+                @club.Name
+            </a>
+    </div>
+    <div class="w-90 d-flex flex-row mb-2">
+            <a 
+                asp-action="CreateEconomy"
+                asp-controller="Club"
+			   asp-route-id="@club.Id"
+            class="btn btn-warning mx-2">Ajustar Economía</a>
+            <a href="#" class="btn btn-info mx-2">Gestión Plantilla</a>
+            <a 
+                asp-action="Delete"
+                asp-controller="Club"
+                asp-route-id="@club.Id"
+                class="btn btn-danger mx2">Cesar Club</a>
+    </div>
+</main>
+	
+
+}

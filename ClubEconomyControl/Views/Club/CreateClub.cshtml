@@ -1,0 +1,20 @@
+﻿@using ClubEconomyControl.Models;
+@model Club;
+
+<h1>Introduce los datos del Club</h1>
+
+<form asp-action="Save" method="post">
+	<div class="form-group">
+		<label asp-for="Name" class="control-label"></label>
+		<input asp-for="Name" class="form-control" />
+		<span asp-validation-for="Name" class="text-danger"></span>
+	</div>
+	<button type="submit" class="btn btn-primary mt-2">Agregar Club</button>
+</form>
+
+
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+}
