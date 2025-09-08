@@ -7,6 +7,7 @@ namespace ClubEconomyControl.Models
         public int Id { get; set; }
         public OrdinaryExpenseType Type { get; set; }
         public int Amount { get; set; }
+        public string? Description { get; set; }
 
         //FKs
         public int ClubId { get; set; }

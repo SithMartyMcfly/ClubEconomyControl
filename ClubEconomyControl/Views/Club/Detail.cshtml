@@ -4,27 +4,33 @@
 
 
 
-<section class="text-center mb-4">
+<section class="sticky-top text-center mb-4 bg-light bg-opacity-100 border rounded-3">
 	<h2>@Html.DisplayFor(p => p.Name)</h2>
 	<ul class="d-inline-block text-start">
 		<li>Balance: @Model.Balance</li>
 		<li>Limite Salarial: @Model.SquadLimitEconomy</li>
 	</ul>
 </section>
-<section class="d-flex flex-row justify-content-center">
+<section class="d-flex flex-row justify-content-center h-25 overflow-auto" style=" max-height: calc(100vh - 240px); overflow-y: auto">
 	<div>
-
-		<h4>Datos Económicos</h4>
+		<h4 class="sticky-top bg-white bg-opacity-100 text-decoration-underline">Datos Económicos</h4>
 		<!--Poner tipo de gasto y Cantidad, después proban en BBDD-->
 		@if (Model.OrdinaryExpenses != null && Model.OrdinaryExpenses.Any())
 		{
-			<p>Ingresos Ordinarios</p>
-			<ul>
-				@foreach (var ordinaryIncome in Model.OrdinaryIncomes)
-				{
-					<li>@Html.DisplayFor(Model => ordinaryIncome.Type): @ordinaryIncome.Amount</li>
-				}
-			</ul>
+			<h6>Ingresos Ordinarios</h6>
+			<div class="overflow-auto">
+				<ul>
+					@foreach (var ordinaryIncome in Model.OrdinaryIncomes)
+					{
+						<!--usamos helper para que muestre la mascara del display del enum-->
+						<li>@Html.DisplayFor(Model => ordinaryIncome.Type): @ordinaryIncome.Amount</li>
+						@if (ordinaryIncome.Description != null)
+						{
+							<li class="list-unstyled">@Html.DisplayFor(Model => ordinaryIncome.Description)</li>
+						}
+					}
+				</ul>
+			</div>
 		}
 		else
 		{
@@ -32,13 +38,20 @@
 		}
 		@if (Model.OrdinaryExpenses != null && Model.OrdinaryExpenses.Any())
 		{
-			<p>Gastos Ordinarios</p>
-			<ul>
-				@foreach (var ordinaryExpense in Model.OrdinaryExpenses)
-				{
-					<li>@Html.DisplayFor(Model => ordinaryExpense.Type) : @ordinaryExpense.Amount</li>
-				}
-			</ul>
+			<h6>Gastos Ordinarios</h6>
+			<div class="overflow-auto">
+
+				<ul>
+					@foreach (var ordinaryExpense in Model.OrdinaryExpenses)
+					{
+						<li>@Html.DisplayFor(Model => ordinaryExpense.Type) : @ordinaryExpense.Amount</li>
+						@if (ordinaryExpense.Description != null)
+						{
+							<li class="list-unstyled">@Html.DisplayFor(Model => ordinaryExpense.Description)</li>
+						}
+					}
+				</ul>
+			</div>
 		}
 		else
 		{
@@ -46,13 +59,19 @@
 		}
 		@if (Model.ExtraordinaryIncomes != null && Model.ExtraordinaryIncomes.Any())
 		{
-			<p>Ingresos Extraordinarios</p>
-			<ul>
-				@foreach (var extraordinaryIncome in Model.ExtraordinaryIncomes)
-				{
-					<li>@Html.DisplayFor(Model => extraordinaryIncome.Type): @extraordinaryIncome.Amount</li>
-				}
-			</ul>
+			<h6>Ingresos Extraordinarios</h6>
+			<div class="overflow-auto">
+				<ul>
+					@foreach (var extraordinaryIncome in Model.ExtraordinaryIncomes)
+					{
+						<li>@Html.DisplayFor(Model => extraordinaryIncome.Type): @extraordinaryIncome.Amount</li>
+						@if (extraordinaryIncome.Description != null)
+						{
+							<li class="list-unstyled">@Html.DisplayFor(Model => extraordinaryIncome.Description)</li>
+						}
+					}
+				</ul>
+			</div>
 		}
 		else
 		{
@@ -60,13 +79,19 @@
 		}
 		@if (Model.ExtraordinaryExpenses != null && Model.ExtraordinaryExpenses.Any())
 		{
-			<p>Gastos Extraordinarios</p>
-			<ul>
-				@foreach (var extraordinaryExpense in Model.ExtraordinaryExpenses)
-				{
-					<li>@Html.DisplayFor(Model => extraordinaryExpense.Type): @extraordinaryExpense.Amount</li>
-				}
-			</ul>
+			<div class="overflow-auto">
+				<h6>Gastos Extraordinarios</h6>
+				<ul>
+					@foreach (var extraordinaryExpense in Model.ExtraordinaryExpenses)
+					{
+						<li>@Html.DisplayFor(Model => extraordinaryExpense.Type): @extraordinaryExpense.Amount</li>
+						@if (extraordinaryExpense.Description != null)
+						{
+							<li class="list-unstyled">@Html.DisplayFor(Model => extraordinaryExpense.Description)</li>
+						}
+					}
+				</ul>
+			</div>
 		}
 		else
 		{
@@ -74,7 +99,7 @@
 		}
 	</div>
 	<div class="mx-4">
-		<h4>Jugadores en plantilla</h4>
+		<h4 class="sticky-top bg-white bg-opacity-100 text-decoration-underline">Jugadores en plantilla</h4>
 		@if (Model.Players != null)
 		{
 			<p>@Model.Players.Count</p>

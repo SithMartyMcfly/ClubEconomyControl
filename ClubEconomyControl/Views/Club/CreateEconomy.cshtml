@@ -6,43 +6,60 @@
 @model ClubEconomyControl.Models.ViewModels.EconomyViewModel;
 
 <!--Vamos a hacer un formulario por cada tipo de concepto que se enviará al método SaveEconomy del controlador Club-->
-	<form asp-action="SaveEconomy" method="post">
-	<input type="hidden" asp-for="ClubId" /><!--Añadimos el id como campo oculto-->
-		<div class="form-group">
-			<label asp-for="NewOrdinaryIncome.Type" class="control-label">Ingreso Ordinario
-			</label>
+<form asp-action="SaveEconomy" method="post">
+	<div class="form-group my-2">
+		<fieldset name="OrdinaryIncome" class="border rounded-3 p-3 bg-light">
+			<input type="hidden" asp-for="ClubId" /><!--Añadimos el id como campo oculto-->
+			<legend class="float-none w-auto">
+				Ingreso Ordinario
+			</legend>
 			<!--Añadimos el método GetEnumSelectList para que añada en las opciones los tipos del Enum
-				Vamos a ayudarnos del atributo que hemos creado en el EconomyViewModel para guardar el 
+				Vamos a ayudarnos del atributo que hemos creado en el EconomyViewModel para guardar el
 				nuevo concepto, que quedará añadido a la lista-->
-				<select asp-for="NewOrdinaryIncome.Type" class="form-control" asp-items="Html.GetEnumSelectList<OrdinaryIncomeType>()">
-					<option value="">-- Selecciona un tipo --</option>
-				</select>
+			<select asp-for="NewOrdinaryIncome.Type" class="form-control" asp-items="Html.GetEnumSelectList<OrdinaryIncomeType>()">
+				<option value="">-- Selecciona un tipo --</option>
+			</select>
 			<span asp-validation-for="NewOrdinaryIncome.Type" class="text-danger"></span>
-			<input asp-for="NewOrdinaryIncome.Amount"/>
-			<br />
-			<button type="submit" class="btn btn-success my-2">Añadir Concepto</button>
-		</div>
-	</form>
 
-	<form asp-action="SaveEconomy" method="post">
-	<input type="hidden" asp-for="ClubId" /><!--Añadimos el id como campo oculto-->
-		<div class="form-group">
-			<label asp-for="NewOrdinaryExpense.Type" class="control-label">
+			<input asp-for="NewOrdinaryIncome.Amount" class="my-1" />
+			<br />
+			<span asp-validation-for="NewOrdinaryIncome.Description" class="text-danger"></span>
+			<label asp-for="NewOrdinaryIncome.Description" class="control-label">Descripción</label>
+			<input asp-for="NewOrdinaryIncome.Description" class="form-control" />
+			<button type="submit" class="btn btn-success my-2">Añadir Concepto</button>
+		</fieldset>
+	</div>
+</form>
+
+<form asp-action="SaveEconomy" method="post">
+	<div class="form-group my-2">
+		<fieldset name="OrdinaryExpense" class="border rounded-3 p-3 bg-light">
+			<input type="hidden" asp-for="ClubId" /><!--Añadimos el id como campo oculto-->
+			<legend class="float-none w-auto">
 				Gasto Ordinario
-			</label>
+			</legend>
 			<select asp-for="NewOrdinaryExpense.Type" class="form-control" asp-items="Html.GetEnumSelectList<OrdinaryExpenseType>()">
 				<option value="">-- Selecciona un tipo --</option>
 			</select>
 			<span asp-validation-for="NewOrdinaryExpense.Type" class="text-danger"></span>
-			<input asp-for="NewOrdinaryExpense.Amount" />
+			<input asp-for="NewOrdinaryExpense.Amount" class="my-1" />
 			<br />
+			<span asp-validation-for="NewOrdinaryExpense.Description" class="text-danger"></span>
+			<label asp-for="NewOrdinaryExpense.Description">Descripción</label>
+			<input asp-for="NewOrdinaryExpense.Description" class="form-control" />
 			<button class="btn btn-success my-2">Añadir Concepto</button>
-		</div>
-	</form>
+		</fieldset>
+	</div>
+</form>
 
-	<form asp-action="SaveEconomy" method="post">
-	<input type="hidden" asp-for="ClubId" /><!--Añadimos el id como campo oculto-->
-		<div class="form-group">
+<form asp-action="SaveEconomy" method="post">
+
+	<div class="form-group my-2">
+		<fieldset name="ExtraordinadyIncome" class="border rounded-3 p-3 bg-light ">
+			<legend class="float-none w-auto">
+				Ingreso Extraordianrio
+			</legend>
+			<input type="hidden" asp-for="ClubId" /><!--Añadimos el id como campo oculto-->
 			<label asp-for="NewExtraordinaryIncome.Type" class="control-label">
 				Ingreso Extraordinario
 			</label>
@@ -52,13 +69,21 @@
 			<span asp-validation-for="NewExtraordinaryIncome.Type" class="text-danger"></span>
 			<input asp-for="NewExtraordinaryIncome.Amount" />
 			<br />
+			<span asp-validation-for="NewExtraordinaryIncome.Description" class="text-danger"></span>
+			<label asp-for="NewExtraordinaryIncome.Description" class="control-label">Descripción</label>
+			<input asp-for="NewExtraordinaryIncome.Description" class="form-control" />
 			<button class="btn btn-success my-2">Añadir Concepto</button>
-		</div>
-	</form>
+		</fieldset>
+	</div>
+</form>
 
-	<form asp-action="SaveEconomy" method="post">
-	<input type="hidden" asp-for="ClubId" /><!--Añadimos el id como campo oculto-->
-		<div class="form-group">
+<form asp-action="SaveEconomy" method="post">
+	<div class="form-group my-2">
+		<fieldset name="ExtraordinaryExpense" class="border rounded-3 p-3 bg-light">
+			<legend class="float-none w-auto">
+				Gasto Extraordinario
+			</legend>
+			<input type="hidden" asp-for="ClubId" /><!--Añadimos el id como campo oculto-->
 			<label asp-for="NewExtraordinaryExpense.Type" class="control-label">
 				Gasto Extraordinario
 			</label>
@@ -68,9 +93,13 @@
 			<span asp-validation-for="NewExtraordinaryExpense.Type" class="text-danger"></span>
 			<input asp-for="NewExtraordinaryExpense.Amount" />
 			<br />
+			<span asp-validation-for="NewExtraordinaryExpense.Description" class="text-danger"></span>
+			<label asp-for="NewExtraordinaryExpense.Description" class="control-label">Descripción</label>
+			<input asp-for="NewExtraordinaryExpense.Description" class="form-control" />
 			<button class="btn btn-success my-2">Añadir Concepto</button>
-		</div>
-	</form>
+		</fieldset>
+	</div>
+</form>
 
-	
+
 

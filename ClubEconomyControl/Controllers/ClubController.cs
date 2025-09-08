@@ -89,8 +89,6 @@ namespace ClubEconomyControl.Controllers
         public async Task<IActionResult> SaveEconomy(EconomyViewModel model)
         {
 
-            Console.WriteLine("ClubId: " + model.ClubId);
-            Console.WriteLine("NewOrdinaryIncome: " + (model.NewOrdinaryIncome != null ? "OK" : "NULL"));
             if (!ModelState.IsValid)
             {
                 foreach (var kvp in ModelState)
@@ -100,7 +98,6 @@ namespace ClubEconomyControl.Controllers
                         Console.WriteLine($"Error en {kvp.Key}: {error.ErrorMessage}");
                     }
                 }
-
 
                 return RedirectToAction("Index", "Club");
             }
