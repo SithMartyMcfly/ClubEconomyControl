@@ -4,6 +4,7 @@ using ClubEconomyControl.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClubEconomyControl.Migrations
 {
     [DbContext(typeof(ClubEconomyDbContext))]
-    partial class ClubEconomyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250911141015_ModelPlayersFixed")]
+    partial class ModelPlayersFixed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -165,8 +168,14 @@ namespace ClubEconomyControl.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("BoughtFromClub")
-                        .HasColumnType("longtext");
+                    b.Property<int>("AmortizationLeft")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AnnualAmortization")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("BoughtFromClubId")
+                        .HasColumnType("int");
 
                     b.Property<int>("ClubId")
                         .HasColumnType("int");
@@ -181,24 +190,25 @@ namespace ClubEconomyControl.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<decimal>("Salary")
-                        .HasColumnType("decimal(10,2)");
+                    b.Property<int>("Salary")
+                        .HasColumnType("int");
 
-                    b.Property<string>("SoldToClub")
-                        .HasColumnType("longtext");
+                    b.Property<int?>("SoldToClubId")
+                        .HasColumnType("int");
 
-                    b.Property<decimal>("TransferFeeBuy")
-                        .HasColumnType("decimal(10,2)");
+                    b.Property<int>("TransferFeeBuy")
+                        .HasColumnType("int");
 
-                    b.Property<decimal?>("TransferFeeSell")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<bool>("isSelled")
-                        .HasColumnType("tinyint(1)");
+                    b.Property<int>("TransferFeeSell")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BoughtFromClubId");
+
                     b.HasIndex("ClubId");
+
+                    b.HasIndex("SoldToClubId");
 
                     b.ToTable("Players");
                 });
@@ -249,13 +259,25 @@ namespace ClubEconomyControl.Migrations
 
             modelBuilder.Entity("ClubEconomyControl.Models.Player", b =>
                 {
+                    b.HasOne("ClubEconomyControl.Models.Club", "BoughtFromClub")
+                        .WithMany()
+                        .HasForeignKey("BoughtFromClubId");
+
                     b.HasOne("ClubEconomyControl.Models.Club", "Club")
                         .WithMany("Players")
                         .HasForeignKey("ClubId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ClubEconomyControl.Models.Club", "SoldToClub")
+                        .WithMany()
+                        .HasForeignKey("SoldToClubId");
+
+                    b.Navigation("BoughtFromClub");
+
                     b.Navigation("Club");
+
+                    b.Navigation("SoldToClub");
                 });
 
             modelBuilder.Entity("ClubEconomyControl.Models.Club", b =>

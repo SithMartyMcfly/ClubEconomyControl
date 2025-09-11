@@ -25,6 +25,27 @@ namespace ClubEconomyControl.Controllers
             return View(await _context.Clubs.ToListAsync());
         }
 
+        // Get: /Club/Squad
+        [HttpGet]
+
+        public async Task<IActionResult> SquadList(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            var club = await _context.Clubs
+                .FindAsync(id);
+            if (club == null)
+                return NotFound();
+            //Recogemos con ViewBag solo el nombre del club
+            ViewBag.ClubName = club.Name;
+            //Retornamos la lista de jugadores
+            return View(await _context.Players
+                .Where(p => p.ClubId == id && p.isSelled == false)
+                .ToListAsync()
+                );
+        }
+
         // Get: /Club/Details/
         [HttpGet]
 
@@ -45,8 +66,13 @@ namespace ClubEconomyControl.Controllers
             return View(club);
         }
 
-        // Post: /Club/CreateClub
+        // Get: /Club/CreatePlayer
         public IActionResult CreateClub()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> CreatePlayer(int ClubId)
         {
             return View();
         }

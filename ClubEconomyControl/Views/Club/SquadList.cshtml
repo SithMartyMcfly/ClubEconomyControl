@@ -1,0 +1,25 @@
+﻿@model List<Player>;
+
+
+<h1>
+	 @ViewBag.ClubName
+</h1>
+
+    <a class="btn btn-success"
+        asp-action="CreatePlayer"
+        asp-controller="Club"
+        asp-route-id="ClubID">
+            Comprar Jugador
+    </a>
+
+<table class="table table-striped">
+    <tr>
+        <th>Nombre Jugador</th>
+    </tr>
+        @foreach (var player in Model)
+        {
+            <td>
+                @player.Name
+			</td>
+        }
+</table>

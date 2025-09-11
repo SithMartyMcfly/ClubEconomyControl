@@ -4,6 +4,7 @@ using ClubEconomyControl.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClubEconomyControl.Migrations
 {
     [DbContext(typeof(ClubEconomyDbContext))]
-    partial class ClubEconomyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250911161051_ModelPlayerFixed")]
+    partial class ModelPlayerFixed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -181,17 +184,17 @@ namespace ClubEconomyControl.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<decimal>("Salary")
-                        .HasColumnType("decimal(10,2)");
+                    b.Property<int>("Salary")
+                        .HasColumnType("int");
 
                     b.Property<string>("SoldToClub")
                         .HasColumnType("longtext");
 
-                    b.Property<decimal>("TransferFeeBuy")
-                        .HasColumnType("decimal(10,2)");
+                    b.Property<int>("TransferFeeBuy")
+                        .HasColumnType("int");
 
-                    b.Property<decimal?>("TransferFeeSell")
-                        .HasColumnType("decimal(10,2)");
+                    b.Property<int>("TransferFeeSell")
+                        .HasColumnType("int");
 
                     b.Property<bool>("isSelled")
                         .HasColumnType("tinyint(1)");

@@ -41,6 +41,27 @@ namespace ClubEconomyControl.Context
                 .WithOne(p => p.Club)
                 .HasForeignKey(p => p.ClubId);
 
+            // Configurar las propiedades de fecha para que solo almacenen la parte de la fecha
+            modelBuilder.Entity<Player>()
+                .Property(p => p.ContractStartDate)
+                .HasColumnType("date");
+
+            modelBuilder.Entity<Player>()
+                .Property(p => p.ContractEndDate)
+                .HasColumnType("date");
+
+            // Configuramos los tipos de los campos decimal
+            modelBuilder.Entity<Player>()
+                .Property(p => p.Salary)
+                .HasColumnType("decimal(10,2)");
+
+            modelBuilder.Entity<Player>()
+                .Property(p => p.TransferFeeBuy)
+                .HasColumnType("decimal(10,2)");
+
+            modelBuilder.Entity<Player>()
+               .Property(p => p.TransferFeeSell)
+               .HasColumnType("decimal(10,2)");
         }
     }
 }

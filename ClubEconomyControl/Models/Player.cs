@@ -1,16 +1,24 @@
-﻿namespace ClubEconomyControl.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ClubEconomyControl.Models
 {
     public class Player
     {
         public int Id { get; set; }
+        [Display(Name = "Nombre")]
         public string Name { get; set; }
-        public int TransferFeeBuy { get; set; }
-        public int TransferFeeSell { get; set; }
-        public int Salary { get; set; }
-        public int ContractStartDate { get; set; }
-        public int ContractEndtDate { get; set; }
-        public int AnnualAmortization { get; set; }
-        public int AmortizationLeft { get; set; }
+        [Display(Name = "Valor Compra")]
+        public decimal TransferFeeBuy { get; set; }
+        [Display(Name = "Valor Venta")]
+        public decimal? TransferFeeSell { get; set; }
+        [Display(Name = "Sueldo")]
+        public decimal Salary { get; set; }
+        [Display(Name = "Fecha Inicio Contrato")]
+        public DateOnly ContractStartDate { get; set; }
+        [Display(Name = "Fecha Finalización Contrato")]
+        public DateOnly ContractEndDate { get; set; }
+        [Display(Name = "Vendido")]
+        public Boolean isSelled { get; set; } = false;
 
         // Foreign Key
         public int ClubId { get; set; }
@@ -18,12 +26,12 @@
 
 
         // Club al que se le compró (nullable)
-        public int? BoughtFromClubId { get; set; }
-        public Club? BoughtFromClub { get; set; }
+        [Display(Name = "Club Procedencia")]
+        public string? BoughtFromClub { get; set; }
 
         // Club al que se le vendió (nullable)
-        public int? SoldToClubId { get; set; }
-        public Club? SoldToClub { get; set; }
+        [Display(Name = "Club Destino")]
+        public string? SoldToClub { get; set; }
 
 
     }

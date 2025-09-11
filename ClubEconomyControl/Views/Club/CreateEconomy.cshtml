@@ -67,7 +67,8 @@
 				<option value="">-- Selecciona un tipo --</option>
 			</select>
 			<span asp-validation-for="NewExtraordinaryIncome.Type" class="text-danger"></span>
-			<input asp-for="NewExtraordinaryIncome.Amount" />
+			
+			<input asp-for="NewExtraordinaryIncome.Amount" class="my-1"/>
 			<br />
 			<span asp-validation-for="NewExtraordinaryIncome.Description" class="text-danger"></span>
 			<label asp-for="NewExtraordinaryIncome.Description" class="control-label">Descripción</label>
@@ -91,7 +92,7 @@
 				<option value="">-- Selecciona un tipo --</option>
 			</select>
 			<span asp-validation-for="NewExtraordinaryExpense.Type" class="text-danger"></span>
-			<input asp-for="NewExtraordinaryExpense.Amount" />
+			<input asp-for="NewExtraordinaryExpense.Amount" class="my-1"/>
 			<br />
 			<span asp-validation-for="NewExtraordinaryExpense.Description" class="text-danger"></span>
 			<label asp-for="NewExtraordinaryExpense.Description" class="control-label">Descripción</label>
