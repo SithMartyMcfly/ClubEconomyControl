@@ -86,7 +86,7 @@
 {
     <script>
 		const sellModal = document.getElementById('sellModal');
-		sellModal.addEventListener('show.bs.modal', event => {
+        sellModal.addEventListener('show.bs.modal', event => { /*show.bs.modal, es un evento de BS*/
 		const button = event.relatedTarget;
 		const playerId = button.getAttribute('data-player-id');
 		const playerName = button.getAttribute('data-player-name');

@@ -2,6 +2,7 @@
 using ClubEconomyControl.Context;
 using ClubEconomyControl.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ClubEconomyControl.Controllers
 {
@@ -69,6 +70,55 @@ namespace ClubEconomyControl.Controllers
                 Console.WriteLine("Error en guardado");
                 return View("CreatePlayer");
             }
+        }
+
+        // Post: Método Venta jugador
+        [HttpPost]
+
+        public async Task<IActionResult> SellPlayer(int Id, int ClubId, int TransferFeeSell, string SoldToClub)
+        {
+            //Primero buscamos el jugador que tenga las IDs correctas
+            var playerSelled = await _context.Players
+                .FirstOrDefaultAsync(p => p.Id == Id && p.ClubId == ClubId);
+            if (playerSelled == null)
+            {
+                return NotFound();
+            }
+
+            /*esta validación queda hecha para saber hacer, no tendría efecto
+             puesto que no se muestran jugadores que tengan el camo isSelled*/
+            if (playerSelled.isSelled)
+            {
+                Console.WriteLine("El jugador fue Vendido antes");
+                TempData["ErrorMessage"] = $"El jugador {playerSelled.Name} ya ha sido vendido.";
+                return RedirectToAction("Index", "Club", new { ClubId = ClubId });
+            }
+
+
+            //Asignación de datos Tabla Player
+            playerSelled.TransferFeeSell = TransferFeeSell;
+            playerSelled.SoldToClub = SoldToClub;
+            playerSelled.isSelled = true;
+            playerSelled.ContractEndDate = DateTime.Today;
+
+            //La venta genera un ExtraordinaryIncome
+            var ExtraordinaryIncome = new ExtraordinaryIncome()
+            {
+                Type = ExtraordinaryIncomeType.PlayerSale,
+                Amount = TransferFeeSell,
+                ClubId = ClubId,
+                Description = "Venta " + playerSelled.Name,
+            };
+            //Añadimos el nuevo ExtraordinaryIncome al contexto
+            _context.ExtraordinaryIncomes.Add(ExtraordinaryIncome);
+
+            //Salvar Datos
+            await _context.SaveChangesAsync();
+
+            //Redirección
+            return RedirectToAction("Index", "Club", new { ClubId = ClubId });
+
+
         }
 
     }

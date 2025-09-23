@@ -39,3 +39,14 @@ asp-controller="Club">Crear Club</a>
 	
 
 }
+
+<!--esta validación queda hecha para saber hacer, no tendría efecto
+  puesto que no se muestran jugadores que tengan el camo isSelled-->
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+}
+
