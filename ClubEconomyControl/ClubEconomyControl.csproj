@@ -7,12 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\Club\Players\**" />
     <Compile Remove="Views\Home\NewFolder\**" />
     <Compile Remove="Views\NewFolder\**" />
+    <Content Remove="Views\Club\Players\**" />
     <Content Remove="Views\Home\NewFolder\**" />
     <Content Remove="Views\NewFolder\**" />
+    <EmbeddedResource Remove="Views\Club\Players\**" />
     <EmbeddedResource Remove="Views\Home\NewFolder\**" />
     <EmbeddedResource Remove="Views\NewFolder\**" />
+    <None Remove="Views\Club\Players\**" />
     <None Remove="Views\Home\NewFolder\**" />
     <None Remove="Views\NewFolder\**" />
   </ItemGroup>

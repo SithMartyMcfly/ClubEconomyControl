@@ -5,21 +5,100 @@
 	 @ViewBag.ClubName
 </h1>
 
-    <a class="btn btn-success"
+    <a class="btn btn-success my-2"
         asp-action="CreatePlayer"
-        asp-controller="Club"
-        asp-route-id="ClubID">
+        asp-controller="Player"
+        asp-route-ClubId="@ViewBag.ClubID">
             Comprar Jugador
     </a>
 
 <table class="table table-striped">
     <tr>
         <th>Nombre Jugador</th>
+        <th></th>
+        <th></th>
     </tr>
         @foreach (var player in Model)
         {
-            <td>
-                @player.Name
-			</td>
+            <tr>
+                <td>
+                    @player.Name
+			    </td>
+                <td><a class="btn btn-info"
+                    asp-action="Detail"
+                    asp-controller="Player"
+                    asp-route-id="@player.Id"
+                    asp-route-ClubId="@ViewBag.ClubId">
+                        Datos Contrato
+                    </a>
+                </td>
+                <td>
+                    <!--vamos a hacer un modal con JS para confirmar la 
+                        venta y añadir cantidad y club de destino del jugador
+                        usamos atributos data para pasar datos hacia el modal.
+                        Con BS vamos a hacer que el modal se abra de forma animada-->
+                    <a class="btn btn-danger" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#sellModal"
+                    data-player-id="@player.Id"
+                    data-player-name="@player.Name"
+                    data-club-id="@ViewBag.ClubId"
+                    >Vender Jugador</a>
+
+                </td>
+            </tr>
         }
 </table>
+
+                    <!--Ventana modal que se abre-->
+                    <div class="modal fade" id="sellModal" tabindex="-1" aria-labelledby="sellModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <!--Formulario para venta-->
+                                <form asp-action="SellPlayer" asp-controller="Player" method="post">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="sellModalLabel">Confirmar Venta de </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                    </div>
+                                        <div class="modal-body px-4">
+                                            <input type="hidden" id="modalPlayerId" name="Id" value=""/>
+                                            <input type="hidden" id="modalClubId" name="ClubId" value=""/>
+                                        <div class="mb-3">
+                                            <label for="TransferFeeSell" class="form-label">Precio Venta</label>
+                                            <input type="number" name="TransferFeeSell" class="form-control" required/>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="SoldToClub" class="form-label">Club destino</label>
+                                            <input type="text" name="SoldToClub" class="form-control" required />
+                                        </div>
+                                    </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                            <button type="submit" class="btn btn-primary">Confirmar venta</button>
+                                        </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+
+@section Scripts 
+{
+    <script>
+		const sellModal = document.getElementById('sellModal');
+		sellModal.addEventListener('show.bs.modal', event => {
+		const button = event.relatedTarget;
+		const playerId = button.getAttribute('data-player-id');
+		const playerName = button.getAttribute('data-player-name');
+		const clubId = button.getAttribute('data-club-id');
+
+        //Id que pasamos al modal
+        document.getElementById('modalPlayerId').value = playerId;
+        document.getElementById('modalClubId').value = clubId;
+
+        //Titulo del modal
+		const modalTitle = sellModal.querySelector('.modal-title');
+		modalTitle.textContent = `Confirmar Venta de ${playerName}`;
+        });
+    </script>
+}

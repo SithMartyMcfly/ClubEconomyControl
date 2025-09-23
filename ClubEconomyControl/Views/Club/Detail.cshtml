@@ -100,7 +100,7 @@
 	</div>
 	<div class="mx-4">
 		<h4 class="sticky-top bg-white bg-opacity-100 text-decoration-underline">Jugadores en plantilla</h4>
-		@if (Model.Players != null)
+		@if (@Model.Players.Count != 0)
 		{
 			<p>@Model.Players.Count</p>
 		}

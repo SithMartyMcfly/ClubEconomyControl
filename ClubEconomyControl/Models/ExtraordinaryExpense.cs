@@ -16,7 +16,7 @@ namespace ClubEconomyControl.Models
 
 public enum ExtraordinaryExpensetype
 {
-    [Display(Name = "Compra Jugadores")]
+    [Display(Name = "Compra Jugador")]
     PlayerTransfer,
     [Display(Name = "Ampliación del Estadio")]
     StadiumUpgrade,

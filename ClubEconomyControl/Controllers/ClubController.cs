@@ -25,57 +25,16 @@ namespace ClubEconomyControl.Controllers
             return View(await _context.Clubs.ToListAsync());
         }
 
-        // Get: /Club/Squad
+        // Get: /Club/CreateClub
         [HttpGet]
-
-        public async Task<IActionResult> SquadList(int? id)
-        {
-            if (id == null)
-                return NotFound();
-
-            var club = await _context.Clubs
-                .FindAsync(id);
-            if (club == null)
-                return NotFound();
-            //Recogemos con ViewBag solo el nombre del club
-            ViewBag.ClubName = club.Name;
-            //Retornamos la lista de jugadores
-            return View(await _context.Players
-                .Where(p => p.ClubId == id && p.isSelled == false)
-                .ToListAsync()
-                );
-        }
-
-        // Get: /Club/Details/
-        [HttpGet]
-
-        public async Task<IActionResult> Detail(int? id)
-        {
-            var club = await _context.Clubs
-                //tenemos que incluir los ingresos y gastos para poder calcular el balance,
-                //para poder sacar en la vista los ingresos y gastos totales
-                .Include(c => c.OrdinaryIncomes)
-                .Include(c => c.ExtraordinaryIncomes)
-                .Include(c => c.OrdinaryExpenses)
-                .Include(c => c.ExtraordinaryExpenses)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            //usamos el servicio para calcular el balance
-            var balance = await _balanceService.CalculateBalanceAsync(club);
-            // Enviar el balance a la vista usando ViewBag
-            ViewBag.Balance = balance;
-            return View(club);
-        }
-
-        // Get: /Club/CreatePlayer
         public IActionResult CreateClub()
         {
             return View();
         }
 
-        public async Task<IActionResult> CreatePlayer(int ClubId)
-        {
-            return View();
-        }
+
+
+
 
         // Post: /Club/CreateEconomy
         //Debemos recibir el id del club para poder mantenerlo y hacer un guardado correcto
@@ -89,6 +48,51 @@ namespace ClubEconomyControl.Controllers
             return View(model);
         }
 
+
+
+        // Get: /Club/Squad
+        [HttpGet]
+        public async Task<IActionResult> SquadList(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            var club = await _context.Clubs
+                .FindAsync(id);
+            if (club == null)
+                return NotFound();
+            //Recogemos con ViewBag solo el nombre del club
+            ViewBag.ClubName = club.Name;
+            ViewBag.ClubId = club.Id;
+            //Retornamos la lista de jugadores
+            return View(await _context.Players
+                .Where(p => p.ClubId == id && p.isSelled == false)
+                .ToListAsync()
+                );
+        }
+
+        // Get: /Club/Details/
+        [HttpGet]
+        public async Task<IActionResult> Detail(int? id)
+        {
+            var club = await _context.Clubs
+                //tenemos que incluir los ingresos y gastos para poder calcular el balance,
+                //para poder sacar en la vista los ingresos y gastos totales
+                .Include(c => c.OrdinaryIncomes)
+                .Include(c => c.ExtraordinaryIncomes)
+                .Include(c => c.OrdinaryExpenses)
+                .Include(c => c.ExtraordinaryExpenses)
+                .Include(c => c.Players)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            //usamos el servicio para calcular el balance
+            var balance = await _balanceService.CalculateBalanceAsync(club);
+            // Enviar el balance a la vista usando ViewBag
+            ViewBag.Balance = balance;
+            return View(club);
+        }
+
+
+        // Post: /Club/Save
         [HttpPost]
         public async Task<IActionResult> Save(Club club)
         {
@@ -111,6 +115,7 @@ namespace ClubEconomyControl.Controllers
             return View("Create", club); // En caso de error, vuelve al formulario
         }
 
+        // Post: /Club/SaveEconomy
         [HttpPost]
         public async Task<IActionResult> SaveEconomy(EconomyViewModel model)
         {
@@ -154,11 +159,6 @@ namespace ClubEconomyControl.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Detail", "Club", new { id = model.ClubId });
         }
-
-
-
-
-
 
 
         // Delete: /Club/Delete

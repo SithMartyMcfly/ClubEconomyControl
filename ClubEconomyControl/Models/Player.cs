@@ -14,9 +14,9 @@ namespace ClubEconomyControl.Models
         [Display(Name = "Sueldo")]
         public decimal Salary { get; set; }
         [Display(Name = "Fecha Inicio Contrato")]
-        public DateOnly ContractStartDate { get; set; }
+        public DateTime ContractStartDate { get; set; }
         [Display(Name = "Fecha Finalización Contrato")]
-        public DateOnly ContractEndDate { get; set; }
+        public DateTime ContractEndDate { get; set; }
         [Display(Name = "Vendido")]
         public Boolean isSelled { get; set; } = false;
 

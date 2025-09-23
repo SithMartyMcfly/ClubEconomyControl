@@ -1,0 +1,16 @@
+﻿@using ClubEconomyControl.Models;
+@model Player;
+
+
+<section class="sticky-top text-center mb-4 bg-light bg-opacity-100 border rounded-3">
+	<h2>@Html.DisplayFor(p => p.Name)</h2>
+	<ul class="d-inline-block text-start">
+		<li>Valor de Compra: @Model.TransferFeeBuy</li>
+		<li>Salario: @Model.Salary €</li>
+		<li>Procedencia: @Model.BoughtFromClub</li>
+		<li>Fecha de Inicio de Contrato: @Model.ContractStartDate.ToShortDateString()</li>
+		<li>Fecha de Fin de Contrato: @Model.ContractEndDate.ToShortDateString()</li>
+	</ul>
+</section>
+
+
