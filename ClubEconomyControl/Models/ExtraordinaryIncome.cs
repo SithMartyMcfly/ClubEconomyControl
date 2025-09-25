@@ -1,9 +1,10 @@
 ﻿
 using System.ComponentModel.DataAnnotations;
+using ClubEconomyControl.Models.Interfaces;
 
 namespace ClubEconomyControl.Models
 {
-    public class ExtraordinaryIncome
+    public class ExtraordinaryIncome : IEconomyModel
     {
         public int Id { get; set; }
         public ExtraordinaryIncomeType Type { get; set; }

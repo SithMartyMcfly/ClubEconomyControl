@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using ClubEconomyControl.Models.Interfaces;
 
 namespace ClubEconomyControl.Models
 {
-    public class ExtraordinaryExpense
+    public class ExtraordinaryExpense : IEconomyModel
     {
         public int Id { get; set; }
-        public ExtraordinaryExpensetype Type { get; set; }
+        public ExtraordinaryExpenseType Type { get; set; }
         public int Amount { get; set; }
         public string? Description { get; set; }
         //FKs
@@ -14,7 +15,7 @@ namespace ClubEconomyControl.Models
     }
 }
 
-public enum ExtraordinaryExpensetype
+public enum ExtraordinaryExpenseType
 {
     [Display(Name = "Compra Jugador")]
     PlayerTransfer,

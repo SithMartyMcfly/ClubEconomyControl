@@ -160,6 +160,79 @@ namespace ClubEconomyControl.Controllers
             return RedirectToAction("Detail", "Club", new { id = model.ClubId });
         }
 
+        // Get: /Club/Economy/Edit
+        [HttpGet]
+        public async Task<IActionResult> EditEconomy(int id, string type)
+        {
+            switch (type)
+            {
+                case "ordinaryIncome":
+                    var ordinaryIncomeRecord = await _context.OrdinaryIncomes.FindAsync(id);
+                    return View("DetailEdit", ordinaryIncomeRecord);
+                case "extraordinaryIncome":
+                    var extraordinaryIncomeRecord = await _context.ExtraordinaryIncomes.FindAsync(id);
+                    return View("DetailEdit", extraordinaryIncomeRecord);
+                case "ordinaryExpense":
+                    var ordinaryExpenseRecord = await _context.OrdinaryExpenses.FindAsync(id);
+                    return View("DetailEdit", ordinaryExpenseRecord);
+                case "extraordinaryExpense":
+                    var extraordinaryExpenseRecord = await _context.ExtraordinaryExpenses.FindAsync(id);
+                    return View("DetailEdit", extraordinaryExpenseRecord);
+                default:
+                    return NotFound();
+
+
+
+
+            }
+        }
+
+        /*// Put: /Club/Economy/Edit
+        [HttpPut]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditEconomy(int id, EconomyViewModel model)
+        {
+            if (id != model.ClubId)
+            {
+                return NotFound();
+            }
+            if (!ModelState.IsValid)
+            {
+                foreach (var kvp in ModelState)
+                {
+                    foreach (var error in kvp.Value.Errors)
+                    {
+                        Console.WriteLine($"Error en {kvp.Key}: {error.ErrorMessage}");
+                    }
+                }
+                return RedirectToAction("Index", "Club");
+            }
+
+            if (model.NewOrdinaryIncome?.Id > 0)
+            {
+                model.NewOrdinaryIncome.ClubId = model.ClubId;
+                _context.OrdinaryIncomes.Update(model.NewOrdinaryIncome);
+            }
+            if (model.NewExtraordinaryIncome?.Id > 0)
+            {
+                model.NewExtraordinaryIncome.ClubId = model.ClubId;
+                _context.ExtraordinaryIncomes.Update(model.NewExtraordinaryIncome);
+            }
+            if (model.NewOrdinaryExpense?.Id > 0)
+            {
+                model.NewOrdinaryExpense.ClubId = model.ClubId;
+                _context.OrdinaryExpenses.Update(model.NewOrdinaryExpense);
+            }
+            if (model.NewExtraordinaryExpense?.Id > 0)
+            {
+                model.NewExtraordinaryExpense.ClubId = model.ClubId;
+                _context.ExtraordinaryExpenses.Update(model.NewExtraordinaryExpense);
+            }
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Detail", "Club", new { id = model.ClubId });
+        }*/
+
 
         // Delete: /Club/Delete
         public async Task<IActionResult> Delete(int id)

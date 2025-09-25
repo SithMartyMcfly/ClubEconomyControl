@@ -1,0 +1,52 @@
+﻿@using ClubEconomyControl.Models;
+@using ClubEconomyControl.Models.Interfaces;
+@model IEconomyModel;
+
+<form asp-action="SaveEconomy" method="post">
+	<input type="hidden" asp-for="Id" />
+	<input type="hidden" asp-for="ClubId" />
+
+	<div class="form-group my-2">
+		<fieldset class="border rounded-3 p-3 bg-light">
+			<legend class="float-none w-auto">
+				@Model.GetType().Name
+			</legend>
+			@{
+				//Usamos reflexión para saber el tipo de modelo que estamos usando y así cargar el enum correspondiente
+				var modelType = Model.GetType().Name;
+
+				//Definimos la lista de SelectListItem que usaremos en el select
+				IEnumerable<SelectListItem> enumList = null;
+
+				//Dependiendo del tipo de modelo, cargamos la lista con el enum correspondiente
+				switch (modelType)
+				{
+				case nameof(OrdinaryIncome):
+						enumList = Html.GetEnumSelectList<OrdinaryIncomeType>();
+						break;
+					case nameof(OrdinaryExpense):
+					enumList = Html.GetEnumSelectList<OrdinaryExpenseType>();
+						break;
+					case nameof(ExtraordinaryIncome):
+					enumList = Html.GetEnumSelectList<ExtraordinaryIncomeType>();
+						break;
+					case nameof(ExtraordinaryExpense):
+					enumList = Html.GetEnumSelectList<ExtraordinaryExpenseType>();
+						break;
+				}
+			}
+
+			<select name="Type" class="form-control" asp-items="enumList">
+				<option value="">-- Selecciona un tipo --</option>
+			</select><br />
+			<input asp-for="Amount" class="my-1" />
+			<br />
+			<span asp-validation-for="Description" class="text-danger"></span>
+			<label asp-for="Description" class="control-label">Descripción</label>
+			<input asp-for="Description" class="form-control" />
+			<button type="submit" class="btn btn-success my-2">Añadir Concepto</button>
+		</fieldset>
+
+</form>
+
+

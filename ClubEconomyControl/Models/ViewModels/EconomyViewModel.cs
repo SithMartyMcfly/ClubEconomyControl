@@ -12,6 +12,5 @@ namespace ClubEconomyControl.Models.ViewModels
         public ExtraordinaryIncome? NewExtraordinaryIncome { get; set; } = new ExtraordinaryIncome();
         public OrdinaryExpense? NewOrdinaryExpense { get; set; } = new OrdinaryExpense();
         public ExtraordinaryExpense? NewExtraordinaryExpense { get; set; } = new ExtraordinaryExpense();
-
     }
 }

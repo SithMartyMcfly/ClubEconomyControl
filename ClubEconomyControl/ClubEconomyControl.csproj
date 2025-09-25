@@ -22,6 +22,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Services\EconomyServiceRecord.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="Views\Club\Index2.cshtml" />
   </ItemGroup>
 

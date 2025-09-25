@@ -23,7 +23,12 @@
 					@foreach (var ordinaryIncome in Model.OrdinaryIncomes)
 					{
 						<!--usamos helper para que muestre la mascara del display del enum-->
-						<li>@Html.DisplayFor(Model => ordinaryIncome.Type): @ordinaryIncome.Amount</li>
+						<a asp-action="EditEconomy"
+							asp-controller="Club"
+							asp-route-type="ordinaryIncome"
+							asp-route-id="@ordinaryIncome.Id"
+							class="text-decoration-none">
+							@Html.DisplayFor(Model => ordinaryIncome.Type): @ordinaryIncome.Amount</a><br />
 						@if (ordinaryIncome.Description != null)
 						{
 							<li class="list-unstyled">@Html.DisplayFor(Model => ordinaryIncome.Description)</li>
@@ -44,7 +49,13 @@
 				<ul>
 					@foreach (var ordinaryExpense in Model.OrdinaryExpenses)
 					{
-						<li>@Html.DisplayFor(Model => ordinaryExpense.Type) : @ordinaryExpense.Amount</li>
+						<a asp-action="EditEconomy"
+							asp-controller="Club"
+							asp-route-type="ordinaryExpense"
+							asp-route-id="@ordinaryExpense.Id"
+							class="text-decoration-none">
+						@Html.DisplayFor(Model => ordinaryExpense.Type) : @ordinaryExpense.Amount</a><br />
+
 						@if (ordinaryExpense.Description != null)
 						{
 							<li class="list-unstyled">@Html.DisplayFor(Model => ordinaryExpense.Description)</li>
@@ -64,7 +75,13 @@
 				<ul>
 					@foreach (var extraordinaryIncome in Model.ExtraordinaryIncomes)
 					{
-						<li>@Html.DisplayFor(Model => extraordinaryIncome.Type): @extraordinaryIncome.Amount</li>
+						<a asp-action="EditEconomy"
+							asp-controller="Club"
+							asp-route-type="extraordinaryIncome"
+							asp-route-id="@extraordinaryIncome.Id"
+							class="text-decoration-none">
+						@Html.DisplayFor(Model => extraordinaryIncome.Type): @extraordinaryIncome.Amount</a><br />
+
 						@if (extraordinaryIncome.Description != null)
 						{
 							<li class="list-unstyled">@Html.DisplayFor(Model => extraordinaryIncome.Description)</li>
@@ -84,7 +101,11 @@
 				<ul>
 					@foreach (var extraordinaryExpense in Model.ExtraordinaryExpenses)
 					{
-						<li>@Html.DisplayFor(Model => extraordinaryExpense.Type): @extraordinaryExpense.Amount</li>
+						<a asp-action="EditEconomy"
+						   asp-controller="Club"
+						   asp-route-type="extraordinaryExpense"
+						   asp-route-id="@extraordinaryExpense.Id"
+						   class="text-decoration-none">@Html.DisplayFor(Model => extraordinaryExpense.Type): @extraordinaryExpense.Amount</a><br />
 						@if (extraordinaryExpense.Description != null)
 						{
 							<li class="list-unstyled">@Html.DisplayFor(Model => extraordinaryExpense.Description)</li>

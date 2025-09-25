@@ -1,4 +1,4 @@
-﻿@using ClubEconomyControl.Models;
+﻿+@using ClubEconomyControl.Models;
 <!--Hay que tipar con el modelo los atributos
 	vamos a usar un viewModel para importar todos
 	los modelos que influyen en esta vista
@@ -88,7 +88,7 @@
 			<label asp-for="NewExtraordinaryExpense.Type" class="control-label">
 				Gasto Extraordinario
 			</label>
-			<select asp-for="NewExtraordinaryExpense.Type" class="form-control" asp-items="Html.GetEnumSelectList<ExtraordinaryExpensetype>()">
+			<select asp-for="NewExtraordinaryExpense.Type" class="form-control" asp-items="Html.GetEnumSelectList<ExtraordinaryExpenseType>()">
 				<option value="">-- Selecciona un tipo --</option>
 			</select>
 			<span asp-validation-for="NewExtraordinaryExpense.Type" class="text-danger"></span>

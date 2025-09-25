@@ -56,7 +56,7 @@ namespace ClubEconomyControl.Controllers
                 _context.Players.Add(player);
                 var extraordinaryExpense = new ExtraordinaryExpense()
                 {
-                    Type = ExtraordinaryExpensetype.PlayerTransfer,
+                    Type = ExtraordinaryExpenseType.PlayerTransfer,
                     Amount = (int)player.TransferFeeBuy, //cambiar tipo de dato a INT en PLAYER
                     ClubId = ClubID,
                     Description = "Compra " + player.Name,
