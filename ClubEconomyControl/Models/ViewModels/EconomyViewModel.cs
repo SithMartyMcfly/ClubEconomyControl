@@ -6,11 +6,12 @@ namespace ClubEconomyControl.Models.ViewModels
     {
         [Required]
         public int ClubId { get; set; }
+        public string? ModelType { get; set; }
 
         //Creamos los objetos para añadir nuevos ingresos y gastos
-        public OrdinaryIncome? NewOrdinaryIncome { get; set; } = new OrdinaryIncome();
-        public ExtraordinaryIncome? NewExtraordinaryIncome { get; set; } = new ExtraordinaryIncome();
-        public OrdinaryExpense? NewOrdinaryExpense { get; set; } = new OrdinaryExpense();
-        public ExtraordinaryExpense? NewExtraordinaryExpense { get; set; } = new ExtraordinaryExpense();
+        public OrdinaryIncome? NewOrdinaryIncome { get; set; }
+        public ExtraordinaryIncome? NewExtraordinaryIncome { get; set; }
+        public OrdinaryExpense? NewOrdinaryExpense { get; set; }
+        public ExtraordinaryExpense? NewExtraordinaryExpense { get; set; }
     }
 }

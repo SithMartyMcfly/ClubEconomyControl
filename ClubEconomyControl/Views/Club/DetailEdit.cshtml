@@ -1,52 +1,113 @@
-﻿@using ClubEconomyControl.Models;
-@using ClubEconomyControl.Models.Interfaces;
-@model IEconomyModel;
+﻿@using ClubEconomyControl.Models
+@using ClubEconomyControl.Models.ViewModels
+@using ClubEconomyControl.Models.Interfaces
+@model EconomyViewModel
 
-<form asp-action="SaveEconomy" method="post">
-	<input type="hidden" asp-for="Id" />
-	<input type="hidden" asp-for="ClubId" />
+@{
+    /*
+     * Método Edit nos devuelve un viewModel donde viene dado el Model que va a 
+     * recibir la vista y por tanto con el que se trabajará en la vista
+     */
 
-	<div class="form-group my-2">
-		<fieldset class="border rounded-3 p-3 bg-light">
-			<legend class="float-none w-auto">
-				@Model.GetType().Name
-			</legend>
-			@{
-				//Usamos reflexión para saber el tipo de modelo que estamos usando y así cargar el enum correspondiente
-				var modelType = Model.GetType().Name;
+    IEconomyModel? subModel = null;
 
-				//Definimos la lista de SelectListItem que usaremos en el select
-				IEnumerable<SelectListItem> enumList = null;
+    if (Model.NewOrdinaryIncome != null)
+        subModel = Model.NewOrdinaryIncome;
+    else if (Model.NewExtraordinaryIncome != null)
+        subModel = Model.NewExtraordinaryIncome;
+    else if (Model.NewOrdinaryExpense != null)
+        subModel = Model.NewOrdinaryExpense;
+    else if (Model.NewExtraordinaryExpense != null)
+        subModel = Model.NewExtraordinaryExpense;
 
-				//Dependiendo del tipo de modelo, cargamos la lista con el enum correspondiente
-				switch (modelType)
-				{
-				case nameof(OrdinaryIncome):
-						enumList = Html.GetEnumSelectList<OrdinaryIncomeType>();
-						break;
-					case nameof(OrdinaryExpense):
-					enumList = Html.GetEnumSelectList<OrdinaryExpenseType>();
-						break;
-					case nameof(ExtraordinaryIncome):
-					enumList = Html.GetEnumSelectList<ExtraordinaryIncomeType>();
-						break;
-					case nameof(ExtraordinaryExpense):
-					enumList = Html.GetEnumSelectList<ExtraordinaryExpenseType>();
-						break;
-				}
-			}
+    if (subModel == null)
+    {
+        <div class="alert alert-danger">No se ha podido determinar el modelo económico a editar.</div>
+        return;
+    }
 
-			<select name="Type" class="form-control" asp-items="enumList">
-				<option value="">-- Selecciona un tipo --</option>
-			</select><br />
-			<input asp-for="Amount" class="my-1" />
-			<br />
-			<span asp-validation-for="Description" class="text-danger"></span>
-			<label asp-for="Description" class="control-label">Descripción</label>
-			<input asp-for="Description" class="form-control" />
-			<button type="submit" class="btn btn-success my-2">Añadir Concepto</button>
-		</fieldset>
+    var modelType = Model.ModelType;/*Es el valor que guarda en ViewModel el atributo ModelType lo guarda como String por eso podemos
+                                    seguir usandolo en todos los Switch que van siguiendo*/
 
+    
+    var prefix = modelType switch
+    {
+        nameof(OrdinaryIncome) => "NewOrdinaryIncome",
+        nameof(ExtraordinaryIncome) => "NewExtraordinaryIncome",
+        nameof(OrdinaryExpense) => "NewOrdinaryExpense",
+        nameof(ExtraordinaryExpense) => "NewExtraordinaryExpense",
+        _ => ""
+    };
+
+    /*Presenta que va a tener la etiqueta Legend*/
+    var legendText = modelType switch
+    {
+        nameof(OrdinaryIncome) => "Ingreso Ordinario",
+        nameof(ExtraordinaryIncome) => "Ingreso Extraordinario",
+        nameof(OrdinaryExpense) => "Gasto Ordinario",
+        nameof(ExtraordinaryExpense) => "Gasto Extraordinario",
+        _ => "Modelo Económico"
+    };
+
+    /*Selecciona el tipo de Lista que va a presentar el Select*/
+
+    IEnumerable<SelectListItem> enumList = modelType switch
+    {
+        nameof(OrdinaryIncome) => Html.GetEnumSelectList<OrdinaryIncomeType>(),
+        nameof(OrdinaryExpense) => Html.GetEnumSelectList<OrdinaryExpenseType>(),
+        nameof(ExtraordinaryIncome) => Html.GetEnumSelectList<ExtraordinaryIncomeType>(),
+        nameof(ExtraordinaryExpense) => Html.GetEnumSelectList<ExtraordinaryExpenseType>(),
+        _ => Enumerable.Empty<SelectListItem>()
+    };
+}
+
+<form asp-action="PutEconomy" asp-controller="Club" method="post">
+    @Html.AntiForgeryToken()
+
+    <!-- Hidden fields for routing and binding -->
+    <input type="hidden" name="ModelType" value="@modelType" />
+    <input type="hidden" name="ClubId" value="@Model.ClubId" />
+    <input type="hidden" name="@($"{prefix}.Id")" value="@subModel.Id" />
+
+    <fieldset class="border rounded-3 p-3 bg-light my-2">
+        <legend class="float-none w-auto">@legendText</legend>
+
+        <!-- Enum selector -->
+        <label for="@($"{prefix}.Type")">Tipo</label>
+        <select id="@($"{prefix}.Type")" name="@($"{prefix}.Type")" class="form-control" asp-items="enumList">
+            <option value="">-- Selecciona un tipo --</option>
+        </select>
+        @{
+            var stateType = ViewData.ModelState[$"{prefix}.Type"];
+        }
+        @if (stateType?.Errors?.Count > 0)
+        {
+            <span class="text-danger">@stateType.Errors[0].ErrorMessage</span>
+        }
+
+        <!-- Amount -->
+        <label for="@($"{prefix}.Amount")" class="mt-2">Cantidad</label>
+        <input id="@($"{prefix}.Amount")" name="@($"{prefix}.Amount")" value="@subModel.Amount" class="form-control" />
+        @{
+            var stateAmount = ViewData.ModelState[$"{prefix}.Amount"];
+        }
+        @if (stateAmount?.Errors?.Count > 0)
+        {
+            <span class="text-danger">@stateAmount.Errors[0].ErrorMessage</span>
+        }
+
+        <!-- Description -->
+        <label for="@($"{prefix}.Description")" class="mt-2">Descripción</label>
+        <input id="@($"{prefix}.Description")" name="@($"{prefix}.Description")" value="@subModel.Description" class="form-control" />
+        @{
+            var stateDesc = ViewData.ModelState[$"{prefix}.Description"];
+        }
+        @if (stateDesc?.Errors?.Count > 0)
+        {
+            <span class="text-danger">@stateDesc.Errors[0].ErrorMessage</span>
+        }
+
+        <!-- Submit -->
+        <button type="submit" class="btn btn-success mt-3">Guardar cambios</button>
+    </fieldset>
 </form>
-
-

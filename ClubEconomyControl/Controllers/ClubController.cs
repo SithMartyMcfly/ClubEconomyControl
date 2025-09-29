@@ -160,78 +160,116 @@ namespace ClubEconomyControl.Controllers
             return RedirectToAction("Detail", "Club", new { id = model.ClubId });
         }
 
-        // Get: /Club/Economy/Edit
         [HttpGet]
         public async Task<IActionResult> EditEconomy(int id, string type)
         {
+            var viewModel = new EconomyViewModel();
+
             switch (type)
             {
                 case "ordinaryIncome":
-                    var ordinaryIncomeRecord = await _context.OrdinaryIncomes.FindAsync(id);
-                    return View("DetailEdit", ordinaryIncomeRecord);
+                    var ordinaryIncome = await _context.OrdinaryIncomes.FindAsync(id);
+                    if (ordinaryIncome == null) return NotFound();
+
+                    viewModel.NewOrdinaryIncome = ordinaryIncome;
+                    viewModel.ClubId = ordinaryIncome.ClubId;
+                    viewModel.ModelType = nameof(OrdinaryIncome);
+                    break;
+
                 case "extraordinaryIncome":
-                    var extraordinaryIncomeRecord = await _context.ExtraordinaryIncomes.FindAsync(id);
-                    return View("DetailEdit", extraordinaryIncomeRecord);
+                    var extraordinaryIncome = await _context.ExtraordinaryIncomes.FindAsync(id);
+                    if (extraordinaryIncome == null) return NotFound();
+
+                    viewModel.NewExtraordinaryIncome = extraordinaryIncome;
+                    viewModel.ClubId = extraordinaryIncome.ClubId;
+                    viewModel.ModelType = nameof(ExtraordinaryIncome);
+                    break;
+
                 case "ordinaryExpense":
-                    var ordinaryExpenseRecord = await _context.OrdinaryExpenses.FindAsync(id);
-                    return View("DetailEdit", ordinaryExpenseRecord);
+                    var ordinaryExpense = await _context.OrdinaryExpenses.FindAsync(id);
+                    if (ordinaryExpense == null) return NotFound();
+
+                    viewModel.NewOrdinaryExpense = ordinaryExpense;
+                    viewModel.ClubId = ordinaryExpense.ClubId;
+                    viewModel.ModelType = nameof(OrdinaryExpense);
+                    break;
+
                 case "extraordinaryExpense":
-                    var extraordinaryExpenseRecord = await _context.ExtraordinaryExpenses.FindAsync(id);
-                    return View("DetailEdit", extraordinaryExpenseRecord);
+                    var extraordinaryExpense = await _context.ExtraordinaryExpenses.FindAsync(id);
+                    if (extraordinaryExpense == null) return NotFound();
+
+                    viewModel.NewExtraordinaryExpense = extraordinaryExpense;
+                    viewModel.ClubId = extraordinaryExpense.ClubId;
+                    viewModel.ModelType = nameof(ExtraordinaryExpense);
+                    break;
+
                 default:
                     return NotFound();
-
-
-
-
             }
+
+            return View("DetailEdit", viewModel);
         }
 
-        /*// Put: /Club/Economy/Edit
-        [HttpPut]
+
+
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditEconomy(int id, EconomyViewModel model)
+        public async Task<IActionResult> PutEconomy(EconomyViewModel model)
         {
-            if (id != model.ClubId)
-            {
-                return NotFound();
-            }
             if (!ModelState.IsValid)
             {
-                foreach (var kvp in ModelState)
-                {
-                    foreach (var error in kvp.Value.Errors)
-                    {
-                        Console.WriteLine($"Error en {kvp.Key}: {error.ErrorMessage}");
-                    }
-                }
-                return RedirectToAction("Index", "Club");
+                return View("DetailEdit", model);
             }
 
-            if (model.NewOrdinaryIncome?.Id > 0)
+            switch (model.ModelType)
             {
-                model.NewOrdinaryIncome.ClubId = model.ClubId;
-                _context.OrdinaryIncomes.Update(model.NewOrdinaryIncome);
+                case nameof(OrdinaryIncome):
+                    var ordinaryIncome = await _context.OrdinaryIncomes.FindAsync(model.NewOrdinaryIncome.Id);
+                    if (ordinaryIncome == null) return NotFound();
+
+                    ordinaryIncome.Type = model.NewOrdinaryIncome.Type;
+                    ordinaryIncome.Amount = model.NewOrdinaryIncome.Amount;
+                    ordinaryIncome.Description = model.NewOrdinaryIncome.Description;
+                    ordinaryIncome.ClubId = model.ClubId;
+                    break;
+
+                case nameof(ExtraordinaryIncome):
+                    var extraordinaryIncome = await _context.ExtraordinaryIncomes.FindAsync(model.NewExtraordinaryIncome.Id);
+                    if (extraordinaryIncome == null) return NotFound();
+
+                    extraordinaryIncome.Type = model.NewExtraordinaryIncome.Type;
+                    extraordinaryIncome.Amount = model.NewExtraordinaryIncome.Amount;
+                    extraordinaryIncome.Description = model.NewExtraordinaryIncome.Description;
+                    extraordinaryIncome.ClubId = model.ClubId;
+                    break;
+
+                case nameof(OrdinaryExpense):
+                    var ordinaryExpense = await _context.OrdinaryExpenses.FindAsync(model.NewOrdinaryExpense.Id);
+                    if (ordinaryExpense == null) return NotFound();
+
+                    ordinaryExpense.Type = model.NewOrdinaryExpense.Type;
+                    ordinaryExpense.Amount = model.NewOrdinaryExpense.Amount;
+                    ordinaryExpense.Description = model.NewOrdinaryExpense.Description;
+                    ordinaryExpense.ClubId = model.ClubId;
+                    break;
+
+                case nameof(ExtraordinaryExpense):
+                    var extraordinaryExpense = await _context.ExtraordinaryExpenses.FindAsync(model.NewExtraordinaryExpense.Id);
+                    if (extraordinaryExpense == null) return NotFound();
+
+                    extraordinaryExpense.Type = model.NewExtraordinaryExpense.Type;
+                    extraordinaryExpense.Amount = model.NewExtraordinaryExpense.Amount;
+                    extraordinaryExpense.Description = model.NewExtraordinaryExpense.Description;
+                    extraordinaryExpense.ClubId = model.ClubId;
+                    break;
+
+                default:
+                    return NotFound();
             }
-            if (model.NewExtraordinaryIncome?.Id > 0)
-            {
-                model.NewExtraordinaryIncome.ClubId = model.ClubId;
-                _context.ExtraordinaryIncomes.Update(model.NewExtraordinaryIncome);
-            }
-            if (model.NewOrdinaryExpense?.Id > 0)
-            {
-                model.NewOrdinaryExpense.ClubId = model.ClubId;
-                _context.OrdinaryExpenses.Update(model.NewOrdinaryExpense);
-            }
-            if (model.NewExtraordinaryExpense?.Id > 0)
-            {
-                model.NewExtraordinaryExpense.ClubId = model.ClubId;
-                _context.ExtraordinaryExpenses.Update(model.NewExtraordinaryExpense);
-            }
+
             await _context.SaveChangesAsync();
-
             return RedirectToAction("Detail", "Club", new { id = model.ClubId });
-        }*/
+        }
 
 
         // Delete: /Club/Delete
