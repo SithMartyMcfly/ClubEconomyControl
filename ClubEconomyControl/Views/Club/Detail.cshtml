@@ -24,15 +24,26 @@
 					{
 						<!--usamos helper para que muestre la mascara del display del enum-->
 						<a asp-action="EditEconomy"
-							asp-controller="Club"
-							asp-route-type="ordinaryIncome"
-							asp-route-id="@ordinaryIncome.Id"
-							class="text-decoration-none">
-							@Html.DisplayFor(Model => ordinaryIncome.Type): @ordinaryIncome.Amount</a><br />
+						   asp-controller="Club"
+						   asp-route-type="ordinaryIncome"
+						   asp-route-id="@ordinaryIncome.Id"
+						   class="text-decoration-none">
+							@Html.DisplayFor(Model => ordinaryIncome.Type): @ordinaryIncome.Amount
+						</a>
+						<br />
 						@if (ordinaryIncome.Description != null)
 						{
 							<li class="list-unstyled">@Html.DisplayFor(Model => ordinaryIncome.Description)</li>
 						}
+						<a asp-action="DeleteEconomy"
+						   asp-controller="Club"
+						   asp-route-type="ordinaryIncome"
+						   asp-route-id="@ordinaryIncome.Id"
+						   class="btn btn-danger py-0 px-1">
+							Borrar
+						</a>
+						<br />
+						<hr />
 					}
 				</ul>
 			</div>
@@ -50,16 +61,29 @@
 					@foreach (var ordinaryExpense in Model.OrdinaryExpenses)
 					{
 						<a asp-action="EditEconomy"
-							asp-controller="Club"
-							asp-route-type="ordinaryExpense"
-							asp-route-id="@ordinaryExpense.Id"
-							class="text-decoration-none">
-						@Html.DisplayFor(Model => ordinaryExpense.Type) : @ordinaryExpense.Amount</a><br />
+						   asp-controller="Club"
+						   asp-route-type="ordinaryExpense"
+						   asp-route-id="@ordinaryExpense.Id"
+						   class="text-decoration-none">
+
+							@Html.DisplayFor(Model => ordinaryExpense.Type) : @ordinaryExpense.Amount
+						</a>
+						<br />
 
 						@if (ordinaryExpense.Description != null)
 						{
 							<li class="list-unstyled">@Html.DisplayFor(Model => ordinaryExpense.Description)</li>
 						}
+
+						<a asp-action="DeleteEconomy"
+						   asp-controller="Club"
+						   asp-route-type="ordinaryExpense"
+						   asp-route-id="@ordinaryExpense.Id"
+						   class="btn btn-danger py-0 px-1">
+							Borrar
+						</a>
+						<br />
+						<hr />
 					}
 				</ul>
 			</div>
@@ -76,16 +100,27 @@
 					@foreach (var extraordinaryIncome in Model.ExtraordinaryIncomes)
 					{
 						<a asp-action="EditEconomy"
-							asp-controller="Club"
-							asp-route-type="extraordinaryIncome"
-							asp-route-id="@extraordinaryIncome.Id"
-							class="text-decoration-none">
-						@Html.DisplayFor(Model => extraordinaryIncome.Type): @extraordinaryIncome.Amount</a><br />
+						   asp-controller="Club"
+						   asp-route-type="extraordinaryIncome"
+						   asp-route-id="@extraordinaryIncome.Id"
+						   class="text-decoration-none">
+							@Html.DisplayFor(Model => extraordinaryIncome.Type): @extraordinaryIncome.Amount
+						</a>
+						<br />
 
 						@if (extraordinaryIncome.Description != null)
 						{
 							<li class="list-unstyled">@Html.DisplayFor(Model => extraordinaryIncome.Description)</li>
 						}
+						<a asp-action="DeleteEconomy"
+						   asp-controller="Club"
+						   asp-route-type="extraOrdinaryIncome"
+						   asp-route-id="@extraordinaryIncome.Id"
+						   class="btn btn-danger py-0 px-1">
+							Borrar
+						</a>
+						<br />
+						<hr />
 					}
 				</ul>
 			</div>
@@ -103,13 +138,23 @@
 					{
 						<a asp-action="EditEconomy"
 						   asp-controller="Club"
-						   asp-route-type="extraordinaryExpense"
+						   asp-route-type="extrardinaryExpense"
 						   asp-route-id="@extraordinaryExpense.Id"
-						   class="text-decoration-none">@Html.DisplayFor(Model => extraordinaryExpense.Type): @extraordinaryExpense.Amount</a><br />
+						   class="text-decoration-none">@Html.DisplayFor(Model => extraordinaryExpense.Type): @extraordinaryExpense.Amount</a>
+						<br />
 						@if (extraordinaryExpense.Description != null)
 						{
 							<li class="list-unstyled">@Html.DisplayFor(Model => extraordinaryExpense.Description)</li>
 						}
+						<a asp-action="DeleteEconomy"
+						   asp-controller="Club"
+						   asp-route-type="extraOrdinaryExpense"
+						   asp-route-id="@extraordinaryExpense.Id"
+						   class="btn btn-danger py-0 px-1">
+							Borrar
+						</a>
+						<br />
+						<hr />
 					}
 				</ul>
 			</div>

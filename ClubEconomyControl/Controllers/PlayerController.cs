@@ -121,6 +121,13 @@ namespace ClubEconomyControl.Controllers
 
         }
 
+        /*//GET: Edición Jugador
+        [HttpGet]
+        public async Task<IActionResult> EditPlayer(int id, int ClubId)
+        {
+
+        }*/
+
     }
 
 }

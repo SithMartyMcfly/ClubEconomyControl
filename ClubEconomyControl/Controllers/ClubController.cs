@@ -288,5 +288,50 @@ namespace ClubEconomyControl.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> DeleteEconomy(int id, string type)
+        {
+            object? recordEconomy = null;
+            int? clubId = null;
+
+            switch (type)
+            {
+                case "ordinaryIncome":
+                    var ordinaryIncome = await _context.OrdinaryIncomes.FindAsync(id);
+                    recordEconomy = ordinaryIncome;
+                    clubId = ordinaryIncome?.ClubId;
+                    break;
+                case "ordinaryExpense":
+                    var ordinaryExpense = await _context.OrdinaryExpenses.FindAsync(id);
+                    recordEconomy = ordinaryExpense;
+                    clubId = ordinaryExpense?.ClubId;
+                    break;
+                case "extraOrdinaryIncome":
+                    var extraordinaryIncome = await _context.ExtraordinaryIncomes.FindAsync(id);
+                    recordEconomy = extraordinaryIncome;
+                    clubId = extraordinaryIncome?.ClubId;
+                    break;
+                case "extraOrdinaryExpense":
+                    var extraordinaryExpense = await _context.ExtraordinaryExpenses.FindAsync(id);
+                    recordEconomy = extraordinaryExpense;
+                    clubId = extraordinaryExpense?.ClubId;
+                    break;
+
+                default:
+                    return NotFound();
+            }
+
+            if (recordEconomy != null)
+            {
+                _context.Remove(recordEconomy);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Detail", new { id = clubId });
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
     }
 }

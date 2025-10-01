@@ -1,6 +1,9 @@
 ﻿@using ClubEconomyControl.Models;
 @model Player;
 
+@{
+	var player = Model;
+}
 
 <section class="sticky-top text-center mb-4 bg-light bg-opacity-100 border rounded-3">
 	<h2>@Html.DisplayFor(p => p.Name)</h2>
@@ -11,6 +14,14 @@
 		<li>Fecha de Inicio de Contrato: @Model.ContractStartDate.ToShortDateString()</li>
 		<li>Fecha de Fin de Contrato: @Model.ContractEndDate.ToShortDateString()</li>
 	</ul>
+	<br />
+	<a
+		asp-action="EditPlater"
+		asp-controller="Player"
+		asp-route-id="@player.Id"
+		asp-route-ClubId = "@player.ClubId"
+		class="btn btn-info mb-3">
+	Editar Jugador</a>
 </section>
 
 
