@@ -39,6 +39,8 @@
 						   asp-controller="Club"
 						   asp-route-type="ordinaryIncome"
 						   asp-route-id="@ordinaryIncome.Id"
+						   data-bs-toggle="modal"
+						   data-bs-target="#confirmModal"
 						   class="btn btn-danger py-0 px-1">
 							Borrar
 						</a>
@@ -79,6 +81,8 @@
 						   asp-controller="Club"
 						   asp-route-type="ordinaryExpense"
 						   asp-route-id="@ordinaryExpense.Id"
+						   data-bs-toggle="modal"
+						   data-bs-target="#confirmModal"
 						   class="btn btn-danger py-0 px-1">
 							Borrar
 						</a>
@@ -116,6 +120,8 @@
 						   asp-controller="Club"
 						   asp-route-type="extraOrdinaryIncome"
 						   asp-route-id="@extraordinaryIncome.Id"
+						   data-bs-toggle="modal"
+						   data-bs-target="#confirmModal"
 						   class="btn btn-danger py-0 px-1">
 							Borrar
 						</a>
@@ -150,6 +156,8 @@
 						   asp-controller="Club"
 						   asp-route-type="extraOrdinaryExpense"
 						   asp-route-id="@extraordinaryExpense.Id"
+						   data-bs-toggle="modal"
+						   data-bs-target="#confirmModal"
 						   class="btn btn-danger py-0 px-1">
 							Borrar
 						</a>
@@ -176,3 +184,35 @@
 		}
 	</div>
 </section>
+
+
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="confirmModalLabel">Confirmación</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+			</div>
+			<div class="modal-body">
+				<p>¿Estás seguro que quieres borrar el registro?</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+				<a id="confirmDeleteBtn" class="btn btn-danger">Confirmar</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<script>
+		var confirmModal = document.getElementById('confirmModal');
+		confirmModal.addEventListener('show.bs.modal', function (event) {
+			var button = event.relatedTarget;
+			var deleteUrl = button.getAttribute('href');
+			var confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+			confirmDeleteBtn.setAttribute('href', deleteUrl);
+		});
+	</script>
+}
+
