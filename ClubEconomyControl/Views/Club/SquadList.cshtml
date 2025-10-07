@@ -17,6 +17,7 @@
         <th>Nombre Jugador</th>
         <th></th>
         <th></th>
+        <th>Amortización</th>
     </tr>
         @foreach (var player in Model)
         {
@@ -45,6 +46,9 @@
                     data-club-id="@ViewBag.ClubId"
                     >Vender Jugador</a>
 
+                </td>
+                <td>
+                    =>Amortiza 
                 </td>
             </tr>
         }

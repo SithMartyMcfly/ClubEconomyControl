@@ -54,6 +54,8 @@ namespace ClubEconomyControl.Controllers
                     player.BoughtFromClub = "Libre";
                 }
                 _context.Players.Add(player);
+
+                //La compra genera un ExtraordinaryExpense
                 var extraordinaryExpense = new ExtraordinaryExpense()
                 {
                     Type = ExtraordinaryExpenseType.PlayerTransfer,
@@ -61,7 +63,10 @@ namespace ClubEconomyControl.Controllers
                     ClubId = ClubID,
                     Description = "Compra " + player.Name,
                 };
+                //Añadimos el nuevo ExtraordinaryExpense al contexto
                 _context.ExtraordinaryExpenses.Add(extraordinaryExpense);
+                // Añadimos la amortización anual del jugador
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction("SquadList", "Club", new { id = ClubID });
             }
