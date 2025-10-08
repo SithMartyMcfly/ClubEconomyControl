@@ -84,10 +84,14 @@ namespace ClubEconomyControl.Controllers
                 .Include(c => c.ExtraordinaryExpenses)
                 .Include(c => c.Players)
                 .FirstOrDefaultAsync(m => m.Id == id);
+            //solo devolvemos la cantidad de jugadores que tengan isSelled = false
+            var countPlayers = await _context.Players
+            .CountAsync(p => p.ClubId == club.Id && !p.isSelled);
             //usamos el servicio para calcular el balance
             var balance = await _balanceService.CalculateBalanceAsync(club);
-            // Enviar el balance a la vista usando ViewBag
+            // Enviar el balance y número de jugadores a la vista usando ViewBag
             ViewBag.Balance = balance;
+            ViewBag.CountPlayers = countPlayers;
             return View(club);
         }
 

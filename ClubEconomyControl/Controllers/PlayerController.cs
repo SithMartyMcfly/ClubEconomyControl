@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using ClubEconomyControl.Context;
 using ClubEconomyControl.Models;
+using ClubEconomyControl.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,9 +10,11 @@ namespace ClubEconomyControl.Controllers
     public class PlayerController : Controller
     {
         private readonly ClubEconomyDbContext _context;
-        public PlayerController(ClubEconomyDbContext context)
+        private readonly AmortizationService _amortizationService;
+        public PlayerController(ClubEconomyDbContext context, AmortizationService amortizationService)
         {
             _context = context;
+            _amortizationService = amortizationService;
         }
 
         // Get: /Club/Players/CreatePlayer
@@ -59,13 +62,18 @@ namespace ClubEconomyControl.Controllers
                 var extraordinaryExpense = new ExtraordinaryExpense()
                 {
                     Type = ExtraordinaryExpenseType.PlayerTransfer,
-                    Amount = (int)player.TransferFeeBuy, //cambiar tipo de dato a INT en PLAYER
+                    Amount = (int)player.TransferFeeBuy,
                     ClubId = ClubID,
                     Description = "Compra " + player.Name,
                 };
                 //Añadimos el nuevo ExtraordinaryExpense al contexto
                 _context.ExtraordinaryExpenses.Add(extraordinaryExpense);
-                // Añadimos la amortización anual del jugador
+
+                // Añadimos valores del servicio Amortization
+                player.AnnualAmortization = await _amortizationService.CalculateAnualAmotizationAsync(player);
+                player.AnnualExpense = player.AnnualAmortization + player.Salary;
+                player.RemainingAmortization = player.TransferFeeBuy;
+
 
                 await _context.SaveChangesAsync();
                 return RedirectToAction("SquadList", "Club", new { id = ClubID });

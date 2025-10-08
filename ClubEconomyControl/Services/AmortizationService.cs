@@ -1,4 +1,5 @@
 ﻿using ClubEconomyControl.Context;
+using ClubEconomyControl.Models;
 
 
 namespace ClubEconomyControl.Services
@@ -14,10 +15,8 @@ namespace ClubEconomyControl.Services
 
 
         //Calcula la amortización anual de un jugador dado su ID
-        public async Task<decimal> CalculateAmotizationAsync(int playerId)
+        public async Task<decimal> CalculateAnualAmotizationAsync(Player player)
         {
-            var player = await _context.Players.FindAsync(playerId);
-
             if (player == null)
                 throw new ArgumentException("Jugador no encontrado.");
 
@@ -32,17 +31,22 @@ namespace ClubEconomyControl.Services
             var YearsSigned = DaysSigned / 365;
             if (YearsSigned < 1)
                 throw new ArgumentException("El contrato debe ser de al menos un año.");
+            if (YearsSigned > 5)
+            {
+                // TODO: Sacar este aviso por el front
+                Console.WriteLine("El contrato no puede ser mayor de 5 años. Se amortiza en 5 años");
+                YearsSigned = 5;
+            }
 
             //control de años
             Console.WriteLine(YearsSigned);
-
             //Hacemos casteo de yearsSigned a decimal para evitar problemas de precisión
             var amortizationTransfer = player.TransferFeeBuy / (decimal)YearsSigned;
 
-            var amortization = amortizationTransfer + player.Salary;
+            //Coste anual en plantilla
+            var amortizationRemaining = amortizationTransfer + player.Salary;
 
-
-            return Math.Round(amortization, 1);
+            return Math.Round(amortizationTransfer, 2);
         }
     }
 

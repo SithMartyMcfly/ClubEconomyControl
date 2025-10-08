@@ -19,8 +19,9 @@ namespace ClubEconomyControl.Models
         public DateTime ContractEndDate { get; set; }
         [Display(Name = "Vendido")]
         public Boolean isSelled { get; set; } = false;
-        public decimal? AnualAmortization { get; set; }
-        public decimal? RemainningAmortization { get; set; }
+        public decimal AnnualAmortization { get; set; }
+        public decimal RemainingAmortization { get; set; }
+        public decimal AnnualExpense { get; set; }
 
         // Foreign Key
         public int ClubId { get; set; }

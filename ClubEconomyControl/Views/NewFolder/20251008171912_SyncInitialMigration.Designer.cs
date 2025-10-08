@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClubEconomyControl.Migrations
 {
     [DbContext(typeof(ClubEconomyDbContext))]
-    [Migration("20250911163527_FixPlayerDecimalMapping")]
-    partial class FixPlayerDecimalMapping
+    [Migration("20251008171912_SyncInitialMigration")]
+    partial class SyncInitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -168,21 +168,30 @@ namespace ClubEconomyControl.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<decimal>("AnnualAmortization")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<decimal>("AnnualExpense")
+                        .HasColumnType("decimal(10,2)");
+
                     b.Property<string>("BoughtFromClub")
                         .HasColumnType("longtext");
 
                     b.Property<int>("ClubId")
                         .HasColumnType("int");
 
-                    b.Property<DateOnly>("ContractEndDate")
+                    b.Property<DateTime>("ContractEndDate")
                         .HasColumnType("date");
 
-                    b.Property<DateOnly>("ContractStartDate")
+                    b.Property<DateTime>("ContractStartDate")
                         .HasColumnType("date");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<decimal>("RemainingAmortization")
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<decimal>("Salary")
                         .HasColumnType("decimal(10,2)");

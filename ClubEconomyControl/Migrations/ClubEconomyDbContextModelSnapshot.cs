@@ -165,8 +165,11 @@ namespace ClubEconomyControl.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal?>("AnualAmortization")
-                        .HasColumnType("decimal(65,30)");
+                    b.Property<decimal>("AnnualAmortization")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<decimal>("AnnualExpense")
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<string>("BoughtFromClub")
                         .HasColumnType("longtext");
@@ -184,8 +187,8 @@ namespace ClubEconomyControl.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<decimal?>("RemainningAmortization")
-                        .HasColumnType("decimal(65,30)");
+                    b.Property<decimal>("RemainingAmortization")
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<decimal>("Salary")
                         .HasColumnType("decimal(10,2)");

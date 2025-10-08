@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClubEconomyControl.Migrations
 {
     [DbContext(typeof(ClubEconomyDbContext))]
-    [Migration("20250911161051_ModelPlayerFixed")]
-    partial class ModelPlayerFixed
+    [Migration("20251008165631_SyncMigration")]
+    partial class SyncMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -168,33 +168,42 @@ namespace ClubEconomyControl.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<decimal>("AnnualAmortization")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<decimal>("AnnualExpense")
+                        .HasColumnType("decimal(10,2)");
+
                     b.Property<string>("BoughtFromClub")
                         .HasColumnType("longtext");
 
                     b.Property<int>("ClubId")
                         .HasColumnType("int");
 
-                    b.Property<DateOnly>("ContractEndDate")
+                    b.Property<DateTime>("ContractEndDate")
                         .HasColumnType("date");
 
-                    b.Property<DateOnly>("ContractStartDate")
+                    b.Property<DateTime>("ContractStartDate")
                         .HasColumnType("date");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int>("Salary")
-                        .HasColumnType("int");
+                    b.Property<decimal>("RemainingAmortization")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<decimal>("Salary")
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<string>("SoldToClub")
                         .HasColumnType("longtext");
 
-                    b.Property<int>("TransferFeeBuy")
-                        .HasColumnType("int");
+                    b.Property<decimal>("TransferFeeBuy")
+                        .HasColumnType("decimal(10,2)");
 
-                    b.Property<int>("TransferFeeSell")
-                        .HasColumnType("int");
+                    b.Property<decimal?>("TransferFeeSell")
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<bool>("isSelled")
                         .HasColumnType("tinyint(1)");

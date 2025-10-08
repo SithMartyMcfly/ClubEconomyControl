@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -6,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ClubEconomyControl.Migrations
 {
     /// <inheritdoc />
-    public partial class FirstMigration : Migration
+    public partial class SyncInitial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -22,8 +23,8 @@ namespace ClubEconomyControl.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    SquadLimitEconomy = table.Column<int>(type: "int", nullable: false),
-                    Balance = table.Column<int>(type: "int", nullable: false)
+                    SquadLimitEconomy = table.Column<int>(type: "int", nullable: true),
+                    Balance = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -40,6 +41,8 @@ namespace ClubEconomyControl.Migrations
                     Type = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Amount = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     ClubId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -63,6 +66,8 @@ namespace ClubEconomyControl.Migrations
                     Type = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Amount = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     ClubId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -86,6 +91,8 @@ namespace ClubEconomyControl.Migrations
                     Type = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Amount = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     ClubId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -109,6 +116,8 @@ namespace ClubEconomyControl.Migrations
                     Type = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Amount = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     ClubId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -131,36 +140,30 @@ namespace ClubEconomyControl.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    TransferFeeBuy = table.Column<int>(type: "int", nullable: false),
-                    TransferFeeSell = table.Column<int>(type: "int", nullable: false),
-                    Salary = table.Column<int>(type: "int", nullable: false),
-                    ContractStartDate = table.Column<int>(type: "int", nullable: false),
-                    ContractEndtDate = table.Column<int>(type: "int", nullable: false),
-                    AnnualAmortization = table.Column<int>(type: "int", nullable: false),
-                    AmortizationLeft = table.Column<int>(type: "int", nullable: false),
+                    TransferFeeBuy = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    TransferFeeSell = table.Column<decimal>(type: "decimal(10,2)", nullable: true),
+                    Salary = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    ContractStartDate = table.Column<DateTime>(type: "date", nullable: false),
+                    ContractEndDate = table.Column<DateTime>(type: "date", nullable: false),
+                    isSelled = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    AnnualAmortization = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    RemainingAmortization = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    AnnualExpense = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     ClubId = table.Column<int>(type: "int", nullable: false),
-                    BoughtFromClubId = table.Column<int>(type: "int", nullable: true),
-                    SoldToClubId = table.Column<int>(type: "int", nullable: true)
+                    BoughtFromClub = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    SoldToClub = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Players", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Players_Clubs_BoughtFromClubId",
-                        column: x => x.BoughtFromClubId,
-                        principalTable: "Clubs",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Players_Clubs_ClubId",
                         column: x => x.ClubId,
                         principalTable: "Clubs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Players_Clubs_SoldToClubId",
-                        column: x => x.SoldToClubId,
-                        principalTable: "Clubs",
-                        principalColumn: "Id");
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -185,19 +188,9 @@ namespace ClubEconomyControl.Migrations
                 column: "ClubId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Players_BoughtFromClubId",
-                table: "Players",
-                column: "BoughtFromClubId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Players_ClubId",
                 table: "Players",
                 column: "ClubId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Players_SoldToClubId",
-                table: "Players",
-                column: "SoldToClubId");
         }
 
         /// <inheritdoc />

@@ -62,6 +62,18 @@ namespace ClubEconomyControl.Context
             modelBuilder.Entity<Player>()
                .Property(p => p.TransferFeeSell)
                .HasColumnType("decimal(10,2)");
+
+            modelBuilder.Entity<Player>()
+                .Property(p => p.AnnualAmortization)
+                .HasColumnType("decimal(10,2)");
+
+            modelBuilder.Entity<Player>()
+                .Property(p => p.RemainingAmortization)
+                .HasColumnType("decimal(10,2)");
+
+            modelBuilder.Entity<Player>()
+                .Property(p => p.AnnualExpense)
+                .HasColumnType("decimal(10,2)");
         }
     }
 }

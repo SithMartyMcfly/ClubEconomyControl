@@ -18,6 +18,8 @@
         <th></th>
         <th></th>
         <th>Amortización</th>
+        <th>Amortización Restante</th>
+        <th>Coste en Plantilla</th>
     </tr>
         @foreach (var player in Model)
         {
@@ -43,12 +45,24 @@
                     data-bs-target="#sellModal"
                     data-player-id="@player.Id"
                     data-player-name="@player.Name"
-                    data-club-id="@ViewBag.ClubId"
-                    >Vender Jugador</a>
+                    data-club-id="@ViewBag.ClubId">Vender Jugador</a>
 
                 </td>
                 <td>
-                    =>Amortiza 
+                    @player.AnnualAmortization 
+                </td>
+                <td>
+                    @player.RemainingAmortization
+                </td>
+                <td>
+                @if (player.AnnualExpense == 0)
+                {
+                    <p>@(player.Salary + @player.AnnualAmortization)</p>
+                }
+                else
+                {
+                    <p>@player.AnnualExpense €</p>
+				}
                 </td>
             </tr>
         }
