@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClubEconomyControl.Migrations
 {
     [DbContext(typeof(ClubEconomyDbContext))]
-    [Migration("20251007083204_AmortizationsFieldsPlayer")]
+    [Migration("20251007093331_AmortizationsFieldsPlayer")]
     partial class AmortizationsFieldsPlayer
     {
         /// <inheritdoc />
@@ -168,6 +168,9 @@ namespace ClubEconomyControl.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<decimal?>("AnualAmortization")
+                        .HasColumnType("decimal(65,30)");
+
                     b.Property<string>("BoughtFromClub")
                         .HasColumnType("longtext");
 
@@ -183,6 +186,9 @@ namespace ClubEconomyControl.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<decimal?>("RemainningAmortization")
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<decimal>("Salary")
                         .HasColumnType("decimal(10,2)");
