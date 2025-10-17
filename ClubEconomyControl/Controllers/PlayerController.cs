@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using ClubEconomyControl.Context;
 using ClubEconomyControl.Models;
+using ClubEconomyControl.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,9 +10,11 @@ namespace ClubEconomyControl.Controllers
     public class PlayerController : Controller
     {
         private readonly ClubEconomyDbContext _context;
-        public PlayerController(ClubEconomyDbContext context)
+        private readonly AmortizationService _amortizationService;
+        public PlayerController(ClubEconomyDbContext context, AmortizationService amortizationService)
         {
             _context = context;
+            _amortizationService = amortizationService;
         }
 
         // Get: /Club/Players/CreatePlayer
@@ -63,9 +66,16 @@ namespace ClubEconomyControl.Controllers
                     ClubId = ClubID,
                     Description = "Compra " + player.Name,
                 };
+
                 //Añadimos el nuevo ExtraordinaryExpense al contexto
                 _context.ExtraordinaryExpenses.Add(extraordinaryExpense);
+
                 // Añadimos la amortización anual del jugador
+                var amortizations = await _amortizationService.CalculateAmotizationAsync(player);
+
+                // Añadimos los valores de la Tupla de CalculateAmortizationAsync a la BBDD
+                player.AnnualExpense = amortizations.amortizationTransfer;
+                player.AnualAmortization = amortizations.annualExpenseAmortization;
 
                 await _context.SaveChangesAsync();
                 return RedirectToAction("SquadList", "Club", new { id = ClubID });

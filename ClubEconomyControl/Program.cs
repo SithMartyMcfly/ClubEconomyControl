@@ -1,14 +1,13 @@
-using Microsoft.EntityFrameworkCore;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using ClubEconomyControl.Context;
 using ClubEconomyControl.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ClubEconomyDbContext>(options =>
     options.UseMySql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
-        new MySqlServerVersion(new Version(8, 0, 36)) // Usa la versión que realmente tienes instalada
+        new MySqlServerVersion(new Version(8, 0, 43)) // Usa la versión que realmente tienes instalada
     )
 );
 
@@ -16,8 +15,10 @@ builder.Services.AddDbContext<ClubEconomyDbContext>(options =>
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
 // Inyectar el servicio de balance
 builder.Services.AddScoped<BalanceService>();
+builder.Services.AddScoped<AmortizationService>();
 
 var app = builder.Build();
 

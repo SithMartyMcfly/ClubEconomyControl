@@ -5,22 +5,35 @@ namespace ClubEconomyControl.Models
     public class Player
     {
         public int Id { get; set; }
+
         [Display(Name = "Nombre")]
         public string Name { get; set; }
+
         [Display(Name = "Valor Compra")]
+        [Range(0, double.MaxValue)]
         public decimal TransferFeeBuy { get; set; }
+
         [Display(Name = "Valor Venta")]
+        [Range(0, double.MaxValue)]
         public decimal? TransferFeeSell { get; set; }
+
         [Display(Name = "Sueldo")]
+        [Range(0, double.MaxValue)]
         public decimal Salary { get; set; }
+
         [Display(Name = "Fecha Inicio Contrato")]
         public DateTime ContractStartDate { get; set; }
+
         [Display(Name = "Fecha Finalización Contrato")]
         public DateTime ContractEndDate { get; set; }
+
         [Display(Name = "Vendido")]
         public Boolean isSelled { get; set; } = false;
+
         public decimal? AnualAmortization { get; set; }
         public decimal? RemainningAmortization { get; set; }
+        public decimal AnnualExpense { get; set; }
+
 
         // Foreign Key
         public int ClubId { get; set; }

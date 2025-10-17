@@ -8,8 +8,8 @@ namespace ClubEconomyControl.Models
 
         [Required(ErrorMessage = "El nombre del club es obligatorio")]
         public string Name { get; set; }
-        public int? SquadLimitEconomy { get; set; } = 0;
-        public int? Balance { get; set; } = 0;
+        public decimal? SquadLimitEconomy { get; set; } = 0;
+        public decimal? Balance { get; set; } = 0;
 
         // Propiedades de navegación desde club hacia otras entidades
         // Hay que iniciar las listas aunque vayan a quedar en nulas para evitar errores con EF

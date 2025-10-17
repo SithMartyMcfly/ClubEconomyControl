@@ -13,7 +13,7 @@ namespace ClubEconomyControl.Services
         {
             _context = context;
         }
-        public async Task<int> CalculateBalanceAsync(Club club)
+        public async Task<decimal> CalculateBalanceAsync(Club club)
         {
             var clubId = club.Id;
             var incomes =

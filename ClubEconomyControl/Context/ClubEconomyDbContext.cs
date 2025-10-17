@@ -47,21 +47,39 @@ namespace ClubEconomyControl.Context
                 .HasColumnType("date");
 
             modelBuilder.Entity<Player>()
-                .Property(p => p.ContractEndDate)
-                .HasColumnType("date");
+                .Property(p => p.ContractEndDate).HasColumnType("date");
 
-            // Configuramos los tipos de los campos decimal
-            modelBuilder.Entity<Player>()
-                .Property(p => p.Salary)
-                .HasColumnType("decimal(10,2)");
+            // Configuramos los tipos de los campos decimal de cada modelo
+            modelBuilder.Entity<Player>(entity =>
+            {
+                entity.Property(p => p.Salary).HasColumnType("decimal(10,2)");
+                entity.Property(p => p.TransferFeeBuy).HasColumnType("decimal(10,2)");
+                entity.Property(p => p.TransferFeeSell).HasColumnType("decimal(10,2)");
+                entity.Property(p => p.AnualAmortization).HasColumnType("decimal(10,3)");
+                entity.Property(p => p.AnnualExpense).HasColumnType("decimal(10,3)");
+                entity.Property(p => p.RemainningAmortization).HasColumnType("decimal(10,3)");
+            });
 
-            modelBuilder.Entity<Player>()
-                .Property(p => p.TransferFeeBuy)
-                .HasColumnType("decimal(10,2)");
+            modelBuilder.Entity<OrdinaryIncome>(entity =>
+            {
+                entity.Property(e => e.Amount).HasColumnType("decimal(10,2)");
+            });
 
-            modelBuilder.Entity<Player>()
-               .Property(p => p.TransferFeeSell)
-               .HasColumnType("decimal(10,2)");
+            modelBuilder.Entity<OrdinaryExpense>(entity =>
+            {
+                entity.Property(e => e.Amount).HasColumnType("decimal(10,2)");
+            });
+
+            modelBuilder.Entity<ExtraordinaryIncome>(entity =>
+            {
+                entity.Property(e => e.Amount).HasColumnType("decimal(10,2)");
+            });
+
+            modelBuilder.Entity<ExtraordinaryExpense>(entity =>
+            {
+                entity.Property(e => e.Amount).HasColumnType("decimal(10,2)");
+            });
+
         }
     }
 }

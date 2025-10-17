@@ -1,4 +1,5 @@
 ﻿using ClubEconomyControl.Context;
+using ClubEconomyControl.Models;
 
 
 namespace ClubEconomyControl.Services
@@ -14,9 +15,9 @@ namespace ClubEconomyControl.Services
 
 
         //Calcula la amortización anual de un jugador dado su ID
-        public async Task<decimal> CalculateAmotizationAsync(int playerId)
+        public async Task<(decimal annualExpenseAmortization, decimal amortizationTransfer)> CalculateAmotizationAsync(Player player)
         {
-            var player = await _context.Players.FindAsync(playerId);
+
 
             if (player == null)
                 throw new ArgumentException("Jugador no encontrado.");
@@ -38,11 +39,10 @@ namespace ClubEconomyControl.Services
 
             //Hacemos casteo de yearsSigned a decimal para evitar problemas de precisión
             var amortizationTransfer = player.TransferFeeBuy / (decimal)YearsSigned;
+            var annualExpenseAmortization = amortizationTransfer + player.Salary;
 
-            var amortization = amortizationTransfer + player.Salary;
 
-
-            return Math.Round(amortization, 1);
+            return (Math.Round(annualExpenseAmortization, 1), amortizationTransfer);
         }
     }
 

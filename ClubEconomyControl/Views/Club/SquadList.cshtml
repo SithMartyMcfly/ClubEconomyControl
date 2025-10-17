@@ -17,7 +17,9 @@
         <th>Nombre Jugador</th>
         <th></th>
         <th></th>
-        <th>Amortización</th>
+        <th>Amortización Fichaje</th>
+        <th>Coste Anual</th>
+        <th>Total para Amortizar</th>
     </tr>
         @foreach (var player in Model)
         {
@@ -48,7 +50,13 @@
 
                 </td>
                 <td>
-                    =>Amortiza 
+                    @player.AnualAmortization 
+                </td>
+                <td>
+                    @player.AnnualExpense
+                </td>
+                <td>
+                    <p>=>amortizationRemaining</p>
                 </td>
             </tr>
         }
