@@ -42,8 +42,12 @@ namespace ClubEconomyControl.Services
             var annualExpenseAmortization = amortizationTransfer + player.Salary;
 
 
-            return (Math.Round(annualExpenseAmortization, 1), amortizationTransfer);
+            return (Math.Round(annualExpenseAmortization, 2),
+                Math.Round(amortizationTransfer, 2));
         }
+
+        //public async Task<decimal> CalculateRemainingAmortization(Player player)
+
     }
 
 }

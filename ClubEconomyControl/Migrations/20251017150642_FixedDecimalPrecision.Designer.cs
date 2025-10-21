@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClubEconomyControl.Migrations
 {
     [DbContext(typeof(ClubEconomyDbContext))]
-    [Migration("20251017075750_FixedDecimalValuesonModels")]
-    partial class FixedDecimalValuesonModels
+    [Migration("20251017150642_FixedDecimalPrecision")]
+    partial class FixedDecimalPrecision
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,7 +34,7 @@ namespace ClubEconomyControl.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<decimal?>("Balance")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -57,7 +57,7 @@ namespace ClubEconomyControl.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<int>("ClubId")
                         .HasColumnType("int");
@@ -85,7 +85,7 @@ namespace ClubEconomyControl.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<int>("ClubId")
                         .HasColumnType("int");
@@ -113,7 +113,7 @@ namespace ClubEconomyControl.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<int>("ClubId")
                         .HasColumnType("int");
@@ -141,7 +141,7 @@ namespace ClubEconomyControl.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<int>("ClubId")
                         .HasColumnType("int");
@@ -169,10 +169,10 @@ namespace ClubEconomyControl.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("AnnualExpense")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(10,3)");
 
                     b.Property<decimal?>("AnualAmortization")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(10,3)");
 
                     b.Property<string>("BoughtFromClub")
                         .HasColumnType("longtext");
@@ -191,7 +191,7 @@ namespace ClubEconomyControl.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<decimal?>("RemainningAmortization")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(10,3)");
 
                     b.Property<decimal>("Salary")
                         .HasColumnType("decimal(10,2)");

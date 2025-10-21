@@ -74,8 +74,8 @@ namespace ClubEconomyControl.Controllers
                 var amortizations = await _amortizationService.CalculateAmotizationAsync(player);
 
                 // Añadimos los valores de la Tupla de CalculateAmortizationAsync a la BBDD
-                player.AnnualExpense = amortizations.amortizationTransfer;
-                player.AnualAmortization = amortizations.annualExpenseAmortization;
+                player.AnnualExpense = amortizations.annualExpenseAmortization;
+                player.AnualAmortization = amortizations.amortizationTransfer;
 
                 await _context.SaveChangesAsync();
                 return RedirectToAction("SquadList", "Club", new { id = ClubID });

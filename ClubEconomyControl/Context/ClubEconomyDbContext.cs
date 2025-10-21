@@ -50,6 +50,12 @@ namespace ClubEconomyControl.Context
                 .Property(p => p.ContractEndDate).HasColumnType("date");
 
             // Configuramos los tipos de los campos decimal de cada modelo
+
+            modelBuilder.Entity<Club>(entity =>
+            {
+                entity.Property(c => c.Balance).HasColumnType("decimal(10,2)");
+            });
+
             modelBuilder.Entity<Player>(entity =>
             {
                 entity.Property(p => p.Salary).HasColumnType("decimal(10,2)");
