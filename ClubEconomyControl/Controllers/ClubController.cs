@@ -11,11 +11,13 @@ namespace ClubEconomyControl.Controllers
     {
         private readonly ClubEconomyDbContext _context;
         private readonly BalanceService _balanceService;
+        private readonly AmortizationService _amortizationService;
 
-        public ClubController(ClubEconomyDbContext context, BalanceService balanceService)
+        public ClubController(ClubEconomyDbContext context, BalanceService balanceService, AmortizationService amortizationService)
         {
             _context = context;
             _balanceService = balanceService;
+            _amortizationService = amortizationService;
         }
 
         // Get: /Club
@@ -64,11 +66,30 @@ namespace ClubEconomyControl.Controllers
             //Recogemos con ViewBag solo el nombre del club
             ViewBag.ClubName = club.Name;
             ViewBag.ClubId = club.Id;
-            //Retornamos la lista de jugadores
-            return View(await _context.Players
+
+            // Mostrar la amortización restante de cada jugador
+
+            // Recuperamos la lista de jugadores del club
+            var players = await _context.Players
                 .Where(p => p.ClubId == id && p.isSelled == false)
-                .ToListAsync()
-                );
+                .ToListAsync();
+
+            // Iniciamos un Diccionario
+            var dictionaryAmortizations = new Dictionary<int, decimal>();
+
+            // Añadimos a cada jugador su Amortización
+            foreach (var player in players)
+            {
+                var remaining = await _amortizationService.CalculateRemainingAmortization(player);
+                dictionaryAmortizations[player.Id] = remaining;
+            }
+
+            // Con un ViewBag sacamos el diccionario
+            ViewBag.Amortizations = dictionaryAmortizations;
+
+
+            //Retornamos la lista de jugadores
+            return View(players);
         }
 
         // Get: /Club/Details/

@@ -46,7 +46,53 @@ namespace ClubEconomyControl.Services
                 Math.Round(amortizationTransfer, 2));
         }
 
-        //public async Task<decimal> CalculateRemainingAmortization(Player player)
+        /* public async Task<decimal> CalculateRemainingAmortization(Player player)
+         {
+
+             //Hallo los meses que han transcurrido desde el inicio del contrato
+             var elapsedMonths = ((DateTime.Now.Year - player.ContractStartDate.Year)*12) 
+                 + DateTime.Now.Month - player.ContractStartDate.Month;
+
+             //Calculo la amortización mensual ya que la anual la tengo guardada
+             var monthAmortization = player.AnualAmortization / 12;
+
+             //Calculo la amortización restante
+             var remainingAmortization = player.TransferFeeBuy - (monthAmortization * elapsedMonths);
+
+             //Devuelvo la amortización restante redondeada a 2 decimales
+             return Math.Round((decimal)remainingAmortization, 2);
+
+         }*/
+
+        public async Task<decimal> CalculateRemainingAmortization(Player player)
+        {
+            // Control de excepciones
+            if (player == null)
+                throw new ArgumentNullException(nameof(player));
+
+            if (player.AnualAmortization == null)
+                throw new InvalidOperationException("La amortización anual no está definida.");
+
+            if (player.ContractStartDate == default)
+                throw new InvalidOperationException("La fecha de inicio de contrato no está definida.");
+
+            // Calculo los meses transcurridos desde el inicio del contrato
+            var elapsedMonths = ((DateTime.Now.Year - player.ContractStartDate.Year) * 12)
+                              + (DateTime.Now.Month - player.ContractStartDate.Month);
+
+            if (elapsedMonths < 0) elapsedMonths = 0;
+
+            // Calculo la amortización mensual
+            var monthAmortization = player.AnualAmortization.Value / 12;
+
+            // Calculo la amortización restante
+            var remainingAmortization = player.TransferFeeBuy - (monthAmortization * elapsedMonths);
+
+            // Devuelvo la amortización restante redondeada a 2 decimales
+            return Math.Round(remainingAmortization, 2);
+        }
+
+
 
     }
 
