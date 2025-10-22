@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <Compile Remove="Services\EconomyServiceRecord.cs" />
+    <Compile Remove="Services\SalarCapService.cs" />
   </ItemGroup>
 
   <ItemGroup>

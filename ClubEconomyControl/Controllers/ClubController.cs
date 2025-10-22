@@ -13,6 +13,7 @@ namespace ClubEconomyControl.Controllers
         private readonly BalanceService _balanceService;
         private readonly AmortizationService _amortizationService;
 
+
         public ClubController(ClubEconomyDbContext context, BalanceService balanceService, AmortizationService amortizationService)
         {
             _context = context;
@@ -105,8 +106,17 @@ namespace ClubEconomyControl.Controllers
                 .Include(c => c.ExtraordinaryExpenses)
                 .Include(c => c.Players)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            //usamos el servicio para calcular el balance
+
+            //usamos el servicio para calcular el balance y el límite salarial
             var balance = await _balanceService.CalculateBalanceAsync(club);
+
+            //Actualizamos los valores en la base de datos si han cambiado
+            if (club.Balance != balance)
+            {
+                club.Balance = balance;
+                _context.Clubs.Update(club);
+                await _context.SaveChangesAsync();
+            }
             // Enviar el balance a la vista usando ViewBag
             ViewBag.Balance = balance;
             return View(club);

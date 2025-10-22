@@ -32,13 +32,6 @@ namespace ClubEconomyControl.Services
                     .SumAsync(i => i.Amount);
 
             var balance = incomes - expenses;
-            //Recalculamos con este servicio el Balance
-            club.Balance = balance;
-            club.SquadLimitEconomy = balance;
-            _context.Clubs.Update(club);
-            await _context.SaveChangesAsync();
-
-
 
             return balance;
         }

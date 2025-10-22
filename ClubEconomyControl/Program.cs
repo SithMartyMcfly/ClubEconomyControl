@@ -16,9 +16,10 @@ builder.Services.AddDbContext<ClubEconomyDbContext>(options =>
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// Inyectar el servicio de balance
+// Inyectar los SERVICIOS
 builder.Services.AddScoped<BalanceService>();
 builder.Services.AddScoped<AmortizationService>();
+builder.Services.AddScoped<SalaryCapService>();
 
 var app = builder.Build();
 

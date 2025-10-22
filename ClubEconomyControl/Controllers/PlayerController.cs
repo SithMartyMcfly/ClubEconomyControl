@@ -11,10 +11,12 @@ namespace ClubEconomyControl.Controllers
     {
         private readonly ClubEconomyDbContext _context;
         private readonly AmortizationService _amortizationService;
-        public PlayerController(ClubEconomyDbContext context, AmortizationService amortizationService)
+        private readonly SalaryCapService _salaryCapService;
+        public PlayerController(ClubEconomyDbContext context, AmortizationService amortizationService, SalaryCapService salaryCapService)
         {
             _context = context;
             _amortizationService = amortizationService;
+            _salaryCapService = salaryCapService;
         }
 
         // Get: /Club/Players/CreatePlayer
@@ -76,6 +78,21 @@ namespace ClubEconomyControl.Controllers
                 // Añadimos los valores de la Tupla de CalculateAmortizationAsync a la BBDD
                 player.AnnualExpense = amortizations.annualExpenseAmortization;
                 player.AnualAmortization = amortizations.amortizationTransfer;
+
+                // Pasamos el servicio de SalaryCap para actualizar el SquadLimitEconomy
+                var availableSalaryCap = await _salaryCapService.CalculateSalaryCap(ClubID, player.AnnualExpense);
+
+                // Buscamos el club para actualizar su SquadLimitEconomy
+                var club = await _context.Clubs.FindAsync(ClubID);
+
+                // Si no existe el club, devolvemos NotFound
+                if (club == null)
+                {
+                    return NotFound();
+                }
+
+                // Actualizamos el SquadLimitEconomy del club
+                club.SquadLimitEconomy = availableSalaryCap;
 
                 await _context.SaveChangesAsync();
                 return RedirectToAction("SquadList", "Club", new { id = ClubID });
