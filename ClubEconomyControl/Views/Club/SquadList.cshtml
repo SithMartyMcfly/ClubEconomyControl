@@ -1,4 +1,7 @@
-﻿@model List<Player>;
+﻿@using ClubEconomyControl.Models
+@model List<Player>;
+
+
 @{
 	var amortizations = ViewBag.Amortizations as Dictionary<int, decimal>;
 }
@@ -20,6 +23,7 @@
         <th>Nombre Jugador</th>
         <th></th>
         <th></th>
+        <th></th>
         <th>Amortización Fichaje</th>
         <th>Coste Anual</th>
         <th>Total para Amortizar</th>
@@ -38,6 +42,15 @@
                         Datos Contrato
                     </a>
                 </td>
+            <td>
+                <a class="btn btn-primary"
+                   asp-action="renew"
+                   asp-controller="Player"
+                   asp-route-id="@player.Id"
+                   asp-route-ClubId="@ViewBag.ClubId">
+                    Renovar
+                </a>
+            </td>
                 <td>
                     <!--vamos a hacer un modal, para confirmar la 
                         venta y añadir cantidad y club de destino del jugador
@@ -49,6 +62,8 @@
                     data-player-id="@player.Id"
                     data-player-name="@player.Name"
                     data-club-id="@ViewBag.ClubId"
+                    data-player-remainingAmortization ="@amortizations[player.Id]"
+                    data-player-annualExpense ="@player.AnnualExpense"
                     >Vender Jugador</a>
 
                 </td>
@@ -59,7 +74,7 @@
                     @player.AnnualExpense
                 </td>
                 <td>
-                    <p>@amortizations[player.Id]</p>
+                    <p>@player.RemainningAmortization</p>
                 </td>
             </tr>
         }
@@ -78,6 +93,8 @@
                                         <div class="modal-body px-4">
                                             <input type="hidden" id="modalPlayerId" name="Id" value=""/>
                                             <input type="hidden" id="modalClubId" name="ClubId" value=""/>
+                                            <input type="hidden" id="modalRemainingAmortization" name="RemainningAmortization" value="" />
+                                            <input type="hidden" id="annualExpense" name="annualExpense" value="" />
                                         <div class="mb-3">
                                             <label for="TransferFeeSell" class="form-label">Precio Venta</label>
                                             <input type="number" name="TransferFeeSell" class="form-control" required/>
@@ -106,10 +123,14 @@
 		const playerId = button.getAttribute('data-player-id');
 		const playerName = button.getAttribute('data-player-name');
 		const clubId = button.getAttribute('data-club-id');
+		const remainingAmortization = button.getAttribute('data-player-remainingAmortization');
+        const annualExpense = button.getAttribute('data-player-annualExpense');
 
         //Id que pasamos al modal
         document.getElementById('modalPlayerId').value = playerId;
         document.getElementById('modalClubId').value = clubId;
+		document.getElementById('modalRemainingAmortization').value = remainingAmortization;
+        document.getElementById('annualExpense').value = annualExpense;
 
         //Titulo del modal
 		const modalTitle = sellModal.querySelector('.modal-title');

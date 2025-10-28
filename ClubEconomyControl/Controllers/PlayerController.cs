@@ -74,25 +74,15 @@ namespace ClubEconomyControl.Controllers
 
                 // Añadimos la amortización anual del jugador
                 var amortizations = await _amortizationService.CalculateAmotizationAsync(player);
+                var remainingAmortization = _amortizationService.CalculateRemainingAmortization(player);
 
                 // Añadimos los valores de la Tupla de CalculateAmortizationAsync a la BBDD
                 player.AnnualExpense = amortizations.annualExpenseAmortization;
                 player.AnualAmortization = amortizations.amortizationTransfer;
+                player.RemainningAmortization = remainingAmortization;
 
                 // Pasamos el servicio de SalaryCap para actualizar el SquadLimitEconomy
-                var availableSalaryCap = await _salaryCapService.CalculateSalaryCap(ClubID, player.AnnualExpense);
-
-                // Buscamos el club para actualizar su SquadLimitEconomy
-                var club = await _context.Clubs.FindAsync(ClubID);
-
-                // Si no existe el club, devolvemos NotFound
-                if (club == null)
-                {
-                    return NotFound();
-                }
-
-                // Actualizamos el SquadLimitEconomy del club
-                club.SquadLimitEconomy = availableSalaryCap;
+                await _salaryCapService.CalculateSalaryCap(ClubID, player.AnnualExpense);
 
                 await _context.SaveChangesAsync();
                 return RedirectToAction("SquadList", "Club", new { id = ClubID });
@@ -106,12 +96,12 @@ namespace ClubEconomyControl.Controllers
 
         // Post: Método Venta jugador
         [HttpPost]
-
-        public async Task<IActionResult> SellPlayer(int Id, int ClubId, int TransferFeeSell, string SoldToClub)
+        public async Task<IActionResult> SellPlayer(int ClubId, Player player)
         {
+
             //Primero buscamos el jugador que tenga las IDs correctas
-            var playerSelled = await _context.Players
-                .FirstOrDefaultAsync(p => p.Id == Id && p.ClubId == ClubId);
+            var playerSelled = await _context.Players.FindAsync(player.Id);
+
             if (playerSelled == null)
             {
                 return NotFound();
@@ -126,18 +116,21 @@ namespace ClubEconomyControl.Controllers
                 return RedirectToAction("Index", "Club", new { ClubId = ClubId });
             }
 
-
             //Asignación de datos Tabla Player
-            playerSelled.TransferFeeSell = TransferFeeSell;
-            playerSelled.SoldToClub = SoldToClub;
+            playerSelled.TransferFeeSell = player.TransferFeeSell;
+            playerSelled.SoldToClub = player.SoldToClub;
             playerSelled.isSelled = true;
             playerSelled.ContractEndDate = DateTime.Today;
+            playerSelled.RemainningAmortization = player.RemainningAmortization;
+
+            //Actualización del límite salarial del club
+            await _salaryCapService.CalculateSalaryCap(ClubId, playerSelled.RemainningAmortization);
 
             //La venta genera un ExtraordinaryIncome
             var ExtraordinaryIncome = new ExtraordinaryIncome()
             {
                 Type = ExtraordinaryIncomeType.PlayerSale,
-                Amount = TransferFeeSell,
+                Amount = (decimal)playerSelled.TransferFeeSell,
                 ClubId = ClubId,
                 Description = "Venta " + playerSelled.Name,
             };
@@ -149,16 +142,58 @@ namespace ClubEconomyControl.Controllers
 
             //Redirección
             return RedirectToAction("Index", "Club", new { ClubId = ClubId });
-
-
         }
 
-        /*//GET: Edición Jugador
+        //GET: Edición Jugador
         [HttpGet]
         public async Task<IActionResult> EditPlayer(int id, int ClubId)
         {
+            var player = await _context.Players.FindAsync(id);
+            if (player == null)
+            {
+                return NotFound();
+            }
+            return View("EditPlayer", player);
 
-        }*/
+        }
+
+        //POST: Guardar Edición Jugador
+        [HttpPost]
+        public async Task<IActionResult> SaveEditPlayer(Player player, int ClubId)
+        {
+            if (ModelState.IsValid)
+            {
+                // Recuperamos el jugador con Id y ClubId que nos trae en parámetros
+                var playerToUpdate = await _context.Players
+                    .FirstOrDefaultAsync(p => p.Id == player.Id && p.ClubId == ClubId);
+
+                if (playerToUpdate == null)
+                {
+                    return NotFound();
+                }
+                // Actualizar los campos editables
+                playerToUpdate.Name = player.Name;
+                playerToUpdate.TransferFeeBuy = player.TransferFeeBuy;
+                playerToUpdate.Salary = player.Salary;
+                playerToUpdate.BoughtFromClub = player.BoughtFromClub;
+                playerToUpdate.ContractStartDate = player.ContractStartDate;
+                playerToUpdate.ContractEndDate = player.ContractEndDate;
+
+                var amortizations = await _amortizationService.CalculateAmotizationAsync(playerToUpdate);
+                playerToUpdate.AnnualExpense = amortizations.annualExpenseAmortization;
+                playerToUpdate.AnualAmortization = amortizations.amortizationTransfer;
+                // Guardar los cambios en la base de datos
+
+                await _context.SaveChangesAsync();
+                return RedirectToAction("SquadList", "Club", new { id = ClubId });
+            }
+            else
+            {
+                Console.WriteLine("Error en guardado de edición");
+                return View("EditPlayer", player);
+            }
+        }
+
 
     }
 

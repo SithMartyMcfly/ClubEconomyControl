@@ -1,0 +1,49 @@
+﻿@using ClubEconomyControl.Models;
+@model Player;
+
+@{
+	var player = Model;
+}
+
+
+<h1>Editar Nuevo Jugador</h1>
+<form asp-action="SaveEditPlayer" asp-controller="Player" method="post">
+	<div class="form-group">
+		<label asp-for="Name" class="control-label"></label>
+		<input asp-for="Name" class="form-control" />
+		<span asp-validation-for="Name" class="text-danger"></span>
+	</div>
+	<div class="form-group">
+		<label asp-for="TransferFeeBuy" class="control-label"></label>
+		<input asp-for="TransferFeeBuy" class="form-control" type="number" step="0.01" />
+		<span asp-validation-for="TransferFeeBuy" class="text-danger"></span>
+	</div>
+	<div class="form-group">
+		<label asp-for="Salary" class="control-label"></label>
+		<input asp-for="Salary" class="form-control" type="number" step="0.01" />
+		<span asp-validation-for="Salary" class="text-danger"></span>
+	</div>
+	<div class="form-group">
+		<label asp-for="BoughtFromClub" class="control-label"></label>
+		<input asp-for="BoughtFromClub" class="form-control" />
+		<span asp-validation-for="BoughtFromClub" class="text-danger"></span>
+	</div>
+	<div class="form-group">
+		<label asp-for="ContractStartDate" class="control-label"></label>
+		<input asp-for="ContractStartDate" class="form-control" type="date" />
+		<span asp-validation-for="ContractStartDate" class="text-danger"></span>
+	</div>
+	<div class="form-group">
+		<label asp-for="ContractEndDate" class="control-label"></label>
+		<input asp-for="ContractEndDate" class="form-control" type="date" />
+		<span asp-validation-for="ContractEndDate" class="text-danger"></span>
+	</div>
+
+	<input type="hidden" asp-for="Id" value="@player.Id" />
+	<input type="hidden" asp-for="ClubId" value="@player.ClubId" />
+	<button
+		type="submit" class="btn btn-primary mt-2"
+	>Editar Jugador</button>
+</form>
+
+

@@ -18,7 +18,6 @@ namespace ClubEconomyControl.Services
         public async Task<(decimal annualExpenseAmortization, decimal amortizationTransfer)> CalculateAmotizationAsync(Player player)
         {
 
-
             if (player == null)
                 throw new ArgumentException("Jugador no encontrado.");
 
@@ -31,8 +30,16 @@ namespace ClubEconomyControl.Services
 
             var DaysSigned = (fin - inicio).TotalDays;
             var YearsSigned = DaysSigned / 365;
+
+            // Control limite de años, la amortización no puede ser mayor a 5 años
             if (YearsSigned < 1)
-                throw new ArgumentException("El contrato debe ser de al menos un año.");
+                throw new ArgumentException("El contrato debe ser de al menos 1 año.");
+            if (YearsSigned > 5)
+            {
+                Console.WriteLine("El contrato no puede ser superior a 5 años");
+                YearsSigned = 5;  //ajustamos a 5 años la amortización
+            }
+
 
             //control de años
             Console.WriteLine(YearsSigned);
@@ -46,25 +53,8 @@ namespace ClubEconomyControl.Services
                 Math.Round(amortizationTransfer, 2));
         }
 
-        /* public async Task<decimal> CalculateRemainingAmortization(Player player)
-         {
 
-             //Hallo los meses que han transcurrido desde el inicio del contrato
-             var elapsedMonths = ((DateTime.Now.Year - player.ContractStartDate.Year)*12) 
-                 + DateTime.Now.Month - player.ContractStartDate.Month;
-
-             //Calculo la amortización mensual ya que la anual la tengo guardada
-             var monthAmortization = player.AnualAmortization / 12;
-
-             //Calculo la amortización restante
-             var remainingAmortization = player.TransferFeeBuy - (monthAmortization * elapsedMonths);
-
-             //Devuelvo la amortización restante redondeada a 2 decimales
-             return Math.Round((decimal)remainingAmortization, 2);
-
-         }*/
-
-        public async Task<decimal> CalculateRemainingAmortization(Player player)
+        public decimal CalculateRemainingAmortization(Player player)
         {
             // Control de excepciones
             if (player == null)
@@ -80,8 +70,14 @@ namespace ClubEconomyControl.Services
             var elapsedMonths = ((DateTime.Now.Year - player.ContractStartDate.Year) * 12)
                               + (DateTime.Now.Month - player.ContractStartDate.Month);
 
-            if (elapsedMonths < 0) elapsedMonths = 0;
-
+            // TODO: Arreglar el if/else
+            if (elapsedMonths < 0)
+                elapsedMonths = 0;
+            if (elapsedMonths > 60)
+            {
+                elapsedMonths = 60;
+                Console.WriteLine("SE AJUSTA A 5 AÑOS LA AMORTIZACIÓN");
+            }
             // Calculo la amortización mensual
             var monthAmortization = player.AnualAmortization.Value / 12;
 
@@ -91,6 +87,11 @@ namespace ClubEconomyControl.Services
             // Devuelvo la amortización restante redondeada a 2 decimales
             return Math.Round(remainingAmortization, 2);
         }
+
+
+
+
+
 
 
 
