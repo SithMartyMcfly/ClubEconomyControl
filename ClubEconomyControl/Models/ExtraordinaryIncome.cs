@@ -10,6 +10,8 @@ namespace ClubEconomyControl.Models
         public ExtraordinaryIncomeType Type { get; set; }
         public decimal Amount { get; set; }
         public string? Description { get; set; }
+        public string? ReferenceCode { get; set; }
+
         // Foreign Key
         public int ClubId { get; set; }
         public Club? Club { get; set; }

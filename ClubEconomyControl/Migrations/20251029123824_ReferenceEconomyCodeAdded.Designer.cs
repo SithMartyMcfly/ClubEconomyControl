@@ -4,6 +4,7 @@ using ClubEconomyControl.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClubEconomyControl.Migrations
 {
     [DbContext(typeof(ClubEconomyDbContext))]
-    partial class ClubEconomyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251029123824_ReferenceEconomyCodeAdded")]
+    partial class ReferenceEconomyCodeAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,7 +41,7 @@ namespace ClubEconomyControl.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<decimal?>("SquadLimitEconomy")
-                        .HasColumnType("decimal(10,2)");
+                        .HasColumnType("decimal(65,30)");
 
                     b.HasKey("Id");
 
@@ -94,6 +97,7 @@ namespace ClubEconomyControl.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("ReferenceCode")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Type")

@@ -6,6 +6,7 @@ namespace ClubEconomyControl.Models
     public class OrdinaryIncome : IEconomyModel
     {
         public int Id { get; set; }
+        public string? ReferenceCode { get; set; }
         public OrdinaryIncomeType Type { get; set; }
         public decimal Amount { get; set; }
         public string? Description { get; set; }

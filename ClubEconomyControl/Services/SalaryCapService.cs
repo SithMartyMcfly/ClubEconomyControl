@@ -7,13 +7,15 @@ namespace ClubEconomyControl.Services
     public class SalaryCapService
     {
         private readonly ClubEconomyDbContext _context;
+        private readonly BalanceService _balanceService;
 
-        public SalaryCapService(ClubEconomyDbContext context)
+        public SalaryCapService(ClubEconomyDbContext context, BalanceService balanceService)
         {
             _context = context;
+            _balanceService = balanceService;
         }
 
-        public async Task CalculateSalaryCap(int ClubID, decimal? nuevoGasto)
+        public async Task CalculateSalaryCap(int ClubID)
         {
             // Control de excepciones
             if (ClubID <= 0)
@@ -24,20 +26,20 @@ namespace ClubEconomyControl.Services
                 .Where(c => c.Id == ClubID)
                 .FirstOrDefaultAsync() ?? throw new NullReferenceException("El club no existe");
 
-            // Ajusto el límite económico
-            club.SquadLimitEconomy -= nuevoGasto;
+            var AnnualExpensesSalary = await _context.Players
+                 .Where(p => p.ClubId == ClubID && !p.isSelled)
+                 .SumAsync(p => p.AnnualExpense);
 
-            //TODO: Añadir libera masa salarial al vender jugador
+            var balance = await _balanceService.CalculateBalanceAsync(club);
 
-            var player = await _context.Players
-                .Where(p => p.ClubId == ClubID)
-                .FirstOrDefaultAsync();
+            club.Balance = balance;
 
-            club.SquadLimitEconomy += player.AnnualExpense;
+            club.SquadLimitEconomy = balance - AnnualExpensesSalary;
+            Console.WriteLine("BALANCE " + balance);
+            Console.WriteLine("LIMITE SALARIAL " + club.SquadLimitEconomy);
 
             // Operaciones de guardado
             _context.Clubs.Update(club);
-            await _context.SaveChangesAsync();
         }
 
 

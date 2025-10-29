@@ -12,13 +12,17 @@ namespace ClubEconomyControl.Controllers
         private readonly ClubEconomyDbContext _context;
         private readonly BalanceService _balanceService;
         private readonly AmortizationService _amortizationService;
+        private readonly SalaryCapService _salaryCapService;
+        private readonly ReferenceCode _referenceCode;
 
 
-        public ClubController(ClubEconomyDbContext context, BalanceService balanceService, AmortizationService amortizationService)
+        public ClubController(ClubEconomyDbContext context, BalanceService balanceService, AmortizationService amortizationService, SalaryCapService salaryCapService, ReferenceCode referenceCode)
         {
             _context = context;
             _balanceService = balanceService;
             _amortizationService = amortizationService;
+            _salaryCapService = salaryCapService;
+            _referenceCode = referenceCode;
         }
 
         // Get: /Club
@@ -36,9 +40,6 @@ namespace ClubEconomyControl.Controllers
         }
 
 
-
-
-
         // Post: /Club/CreateEconomy
         //Debemos recibir el id del club para poder mantenerlo y hacer un guardado correcto
         public IActionResult CreateEconomy(int id)
@@ -50,7 +51,6 @@ namespace ClubEconomyControl.Controllers
             //y devolverlo
             return View(model);
         }
-
 
 
         // Get: /Club/Squad
@@ -81,13 +81,8 @@ namespace ClubEconomyControl.Controllers
             // Añadimos a cada jugador su Amortización
             foreach (var player in players)
             {
-                var remaining = _amortizationService.CalculateRemainingAmortization(player);
-                dictionaryAmortizations[player.Id] = remaining;
+                var remaining = _amortizationService.UpdateAmortizationValuesAsnync(player);
             }
-
-            // Con un ViewBag sacamos el diccionario
-            ViewBag.Amortizations = dictionaryAmortizations;
-
 
             //Retornamos la lista de jugadores
             return View(players);
@@ -107,18 +102,6 @@ namespace ClubEconomyControl.Controllers
                 .Include(c => c.Players)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            //usamos el servicio para calcular el balance y el límite salarial
-            var balance = await _balanceService.CalculateBalanceAsync(club);
-
-            //Actualizamos los valores en la base de datos si han cambiado
-            if (club.Balance != balance)
-            {
-                club.Balance = balance;
-                _context.Clubs.Update(club);
-                await _context.SaveChangesAsync();
-            }
-            // Enviar el balance a la vista usando ViewBag
-            ViewBag.Balance = balance;
             return View(club);
         }
 
@@ -166,27 +149,33 @@ namespace ClubEconomyControl.Controllers
             if (model.NewOrdinaryIncome?.Amount > 0)
             {
                 model.NewOrdinaryIncome.ClubId = model.ClubId;
+                model.NewOrdinaryIncome.ReferenceCode = _referenceCode.GeneratorEconomyCode(model.NewOrdinaryIncome.Type.ToString(), model.ClubId);
                 _context.OrdinaryIncomes.Add(model.NewOrdinaryIncome);
-            }
-
-            if (model.NewExtraordinaryIncome?.Amount > 0)
-            {
-                model.NewExtraordinaryIncome.ClubId = model.ClubId;
-                _context.ExtraordinaryIncomes.Add(model.NewExtraordinaryIncome);
             }
 
             if (model.NewOrdinaryExpense?.Amount > 0)
             {
                 model.NewOrdinaryExpense.ClubId = model.ClubId;
+                model.NewOrdinaryExpense.ReferenceCode = _referenceCode.GeneratorEconomyCode(model.NewOrdinaryExpense.Type.ToString(), model.ClubId);
                 _context.OrdinaryExpenses.Add(model.NewOrdinaryExpense);
+            }
+
+            if (model.NewExtraordinaryIncome?.Amount > 0)
+            {
+                model.NewExtraordinaryIncome.ClubId = model.ClubId;
+                model.NewExtraordinaryIncome.ReferenceCode = _referenceCode.GeneratorEconomyCode(model.NewExtraordinaryIncome.Type.ToString(), model.ClubId);
+                _context.ExtraordinaryIncomes.Add(model.NewExtraordinaryIncome);
             }
 
             if (model.NewExtraordinaryExpense?.Amount > 0)
             {
                 model.NewExtraordinaryExpense.ClubId = model.ClubId;
+                model.NewExtraordinaryExpense.ReferenceCode = _referenceCode.GeneratorEconomyCode(model.NewExtraordinaryExpense.Type.ToString(), model.ClubId);
                 _context.ExtraordinaryExpenses.Add(model.NewExtraordinaryExpense);
             }
 
+            await _context.SaveChangesAsync();
+            await _salaryCapService.CalculateSalaryCap(model.ClubId);
             await _context.SaveChangesAsync();
             return RedirectToAction("Detail", "Club", new { id = model.ClubId });
         }

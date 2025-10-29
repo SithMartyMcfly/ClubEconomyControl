@@ -42,10 +42,6 @@ namespace ClubEconomyControl.Controllers
         [HttpPost]
         public async Task<IActionResult> SavePlayer(Player player, int ClubID)
         {
-            player.ClubId = ClubID;
-            player.isSelled = false;
-
-
             Console.WriteLine(JsonSerializer.Serialize(player));
             foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
             {
@@ -54,17 +50,25 @@ namespace ClubEconomyControl.Controllers
             }
             if (ModelState.IsValid)
             {
-                if (string.IsNullOrEmpty(player.BoughtFromClub))
-                {
-                    player.BoughtFromClub = "Libre";
-                }
+                // Controlamos datos del jugador y sus amortizaciones
+                player.ClubId = ClubID;
+                player.isSelled = false;
+                player.BoughtFromClub ??= "Libre";
+
+                // Pasamos el servicio amortizaciones y recogemos sus datos en el modelo Player
+                var amortizations = await _amortizationService.CalculateAmotizationAsync(player);
+                player.AnnualExpense = amortizations.annualExpenseAmortization;
+                player.AnualAmortization = amortizations.amortizationTransfer;
+                player.RemainningAmortization = _amortizationService.CalculateRemainingAmortization(player);
+
+                // Añadimos el jugador al context
                 _context.Players.Add(player);
 
                 //La compra genera un ExtraordinaryExpense
                 var extraordinaryExpense = new ExtraordinaryExpense()
                 {
                     Type = ExtraordinaryExpenseType.PlayerTransfer,
-                    Amount = (int)player.TransferFeeBuy, //cambiar tipo de dato a INT en PLAYER
+                    Amount = player.TransferFeeBuy,
                     ClubId = ClubID,
                     Description = "Compra " + player.Name,
                 };
@@ -72,19 +76,11 @@ namespace ClubEconomyControl.Controllers
                 //Añadimos el nuevo ExtraordinaryExpense al contexto
                 _context.ExtraordinaryExpenses.Add(extraordinaryExpense);
 
-                // Añadimos la amortización anual del jugador
-                var amortizations = await _amortizationService.CalculateAmotizationAsync(player);
-                var remainingAmortization = _amortizationService.CalculateRemainingAmortization(player);
-
-                // Añadimos los valores de la Tupla de CalculateAmortizationAsync a la BBDD
-                player.AnnualExpense = amortizations.annualExpenseAmortization;
-                player.AnualAmortization = amortizations.amortizationTransfer;
-                player.RemainningAmortization = remainingAmortization;
-
                 // Pasamos el servicio de SalaryCap para actualizar el SquadLimitEconomy
-                await _salaryCapService.CalculateSalaryCap(ClubID, player.AnnualExpense);
-
                 await _context.SaveChangesAsync();
+                await _salaryCapService.CalculateSalaryCap(ClubID);
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction("SquadList", "Club", new { id = ClubID });
             }
             else
@@ -92,56 +88,6 @@ namespace ClubEconomyControl.Controllers
                 Console.WriteLine("Error en guardado");
                 return View("CreatePlayer");
             }
-        }
-
-        // Post: Método Venta jugador
-        [HttpPost]
-        public async Task<IActionResult> SellPlayer(int ClubId, Player player)
-        {
-
-            //Primero buscamos el jugador que tenga las IDs correctas
-            var playerSelled = await _context.Players.FindAsync(player.Id);
-
-            if (playerSelled == null)
-            {
-                return NotFound();
-            }
-
-            /*esta validación queda hecha para saber hacer, no tendría efecto
-             puesto que no se muestran jugadores que tengan el camo isSelled*/
-            if (playerSelled.isSelled)
-            {
-                Console.WriteLine("El jugador fue Vendido antes");
-                TempData["ErrorMessage"] = $"El jugador {playerSelled.Name} ya ha sido vendido.";
-                return RedirectToAction("Index", "Club", new { ClubId = ClubId });
-            }
-
-            //Asignación de datos Tabla Player
-            playerSelled.TransferFeeSell = player.TransferFeeSell;
-            playerSelled.SoldToClub = player.SoldToClub;
-            playerSelled.isSelled = true;
-            playerSelled.ContractEndDate = DateTime.Today;
-            playerSelled.RemainningAmortization = player.RemainningAmortization;
-
-            //Actualización del límite salarial del club
-            await _salaryCapService.CalculateSalaryCap(ClubId, playerSelled.RemainningAmortization);
-
-            //La venta genera un ExtraordinaryIncome
-            var ExtraordinaryIncome = new ExtraordinaryIncome()
-            {
-                Type = ExtraordinaryIncomeType.PlayerSale,
-                Amount = (decimal)playerSelled.TransferFeeSell,
-                ClubId = ClubId,
-                Description = "Venta " + playerSelled.Name,
-            };
-            //Añadimos el nuevo ExtraordinaryIncome al contexto
-            _context.ExtraordinaryIncomes.Add(ExtraordinaryIncome);
-
-            //Salvar Datos
-            await _context.SaveChangesAsync();
-
-            //Redirección
-            return RedirectToAction("Index", "Club", new { ClubId = ClubId });
         }
 
         //GET: Edición Jugador
@@ -182,9 +128,12 @@ namespace ClubEconomyControl.Controllers
                 var amortizations = await _amortizationService.CalculateAmotizationAsync(playerToUpdate);
                 playerToUpdate.AnnualExpense = amortizations.annualExpenseAmortization;
                 playerToUpdate.AnualAmortization = amortizations.amortizationTransfer;
-                // Guardar los cambios en la base de datos
 
+                // Guardar los cambios en la base de datos
                 await _context.SaveChangesAsync();
+                await _salaryCapService.CalculateSalaryCap(ClubId);
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction("SquadList", "Club", new { id = ClubId });
             }
             else
@@ -192,6 +141,56 @@ namespace ClubEconomyControl.Controllers
                 Console.WriteLine("Error en guardado de edición");
                 return View("EditPlayer", player);
             }
+        }
+
+        // Post: Método Venta jugador
+        [HttpPost]
+        public async Task<IActionResult> SellPlayer(int ClubId, Player player)
+        {
+
+            //Primero buscamos el jugador que tenga las IDs correctas
+            var playerSelled = await _context.Players.FindAsync(player.Id);
+
+            if (playerSelled == null)
+            {
+                return NotFound();
+            }
+
+            /*esta validación queda hecha para saber hacer, no tendría efecto
+             puesto que no se muestran jugadores que tengan el camo isSelled*/
+            if (playerSelled.isSelled)
+            {
+                Console.WriteLine("El jugador fue Vendido antes");
+                TempData["ErrorMessage"] = $"El jugador {playerSelled.Name} ya ha sido vendido.";
+                return RedirectToAction("Index", "Club", new { ClubId = ClubId });
+            }
+
+            //Asignación de datos Tabla Player
+            playerSelled.TransferFeeSell = player.TransferFeeSell;
+            playerSelled.SoldToClub = player.SoldToClub;
+            playerSelled.isSelled = true;
+            playerSelled.ContractEndDate = DateTime.Today;
+            playerSelled.RemainningAmortization = player.RemainningAmortization;
+
+            //Actualización del límite salarial del club
+            await _salaryCapService.CalculateSalaryCap(ClubId);
+
+            //La venta genera un ExtraordinaryIncome
+            var ExtraordinaryIncome = new ExtraordinaryIncome()
+            {
+                Type = ExtraordinaryIncomeType.PlayerSale,
+                Amount = (decimal)playerSelled.TransferFeeSell,
+                ClubId = ClubId,
+                Description = "Venta " + playerSelled.Name,
+            };
+            //Añadimos el nuevo ExtraordinaryIncome al contexto
+            _context.ExtraordinaryIncomes.Add(ExtraordinaryIncome);
+
+            //Salvar Datos
+            await _context.SaveChangesAsync();
+
+            //Redirección
+            return RedirectToAction("Index", "Club", new { ClubId = ClubId });
         }
 
 

@@ -12,6 +12,7 @@ namespace ClubEconomyControl.Models
         //FKs
         public int ClubId { get; set; }
         public Club? Club { get; set; }
+        public string? ReferenceCode { get; set; }
     }
 }
 

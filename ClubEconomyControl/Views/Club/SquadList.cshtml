@@ -2,10 +2,6 @@
 @model List<Player>;
 
 
-@{
-	var amortizations = ViewBag.Amortizations as Dictionary<int, decimal>;
-}
-
 
 <h1>
 	 @ViewBag.ClubName
@@ -62,7 +58,7 @@
                     data-player-id="@player.Id"
                     data-player-name="@player.Name"
                     data-club-id="@ViewBag.ClubId"
-                    data-player-remainingAmortization ="@amortizations[player.Id]"
+                    data-player-remainingAmortization ="@player.RemainningAmortization"
                     data-player-annualExpense ="@player.AnnualExpense"
                     >Vender Jugador</a>
 

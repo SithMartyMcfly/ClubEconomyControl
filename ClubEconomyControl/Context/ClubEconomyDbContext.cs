@@ -47,13 +47,21 @@ namespace ClubEconomyControl.Context
                 .HasColumnType("date");
 
             modelBuilder.Entity<Player>()
-                .Property(p => p.ContractEndDate).HasColumnType("date");
+                .Property(p => p.ContractEndDate)
+                .HasColumnType("date");
 
             // Configuramos los tipos de los campos decimal de cada modelo
 
             modelBuilder.Entity<Club>(entity =>
             {
-                entity.Property(c => c.Balance).HasColumnType("decimal(10,2)");
+                entity.Property(c => c.Balance)
+                .HasColumnType("decimal(10,2)");
+            });
+
+            modelBuilder.Entity<Club>(entity =>
+            {
+                entity.Property(c => c.SquadLimitEconomy)
+                .HasColumnType("decimal(10,2)");
             });
 
             modelBuilder.Entity<Player>(entity =>
@@ -68,22 +76,26 @@ namespace ClubEconomyControl.Context
 
             modelBuilder.Entity<OrdinaryIncome>(entity =>
             {
-                entity.Property(e => e.Amount).HasColumnType("decimal(10,2)");
+                entity.Property(e => e.Amount)
+                .HasColumnType("decimal(10,2)");
             });
 
             modelBuilder.Entity<OrdinaryExpense>(entity =>
             {
-                entity.Property(e => e.Amount).HasColumnType("decimal(10,2)");
+                entity.Property(e => e.Amount)
+                .HasColumnType("decimal(10,2)");
             });
 
             modelBuilder.Entity<ExtraordinaryIncome>(entity =>
             {
-                entity.Property(e => e.Amount).HasColumnType("decimal(10,2)");
+                entity.Property(e => e.Amount)
+                .HasColumnType("decimal(10,2)");
             });
 
             modelBuilder.Entity<ExtraordinaryExpense>(entity =>
             {
-                entity.Property(e => e.Amount).HasColumnType("decimal(10,2)");
+                entity.Property(e => e.Amount)
+                .HasColumnType("decimal(10,2)");
             });
 
         }

@@ -20,6 +20,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<BalanceService>();
 builder.Services.AddScoped<AmortizationService>();
 builder.Services.AddScoped<SalaryCapService>();
+builder.Services.AddScoped<ReferenceCode>();
 
 var app = builder.Build();
 

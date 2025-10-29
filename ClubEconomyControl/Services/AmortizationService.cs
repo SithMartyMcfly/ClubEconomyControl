@@ -88,7 +88,21 @@ namespace ClubEconomyControl.Services
             return Math.Round(remainingAmortization, 2);
         }
 
+        public async Task UpdateAmortizationValuesAsnync(Player player)
+        {
+            if (player == null)
+                throw new ArgumentNullException(nameof(player));
 
+            var amortizations = await CalculateAmotizationAsync(player);
+            var remainingAmortization = CalculateRemainingAmortization(player);
+
+            player.AnnualExpense = amortizations.annualExpenseAmortization;
+            player.AnualAmortization = amortizations.amortizationTransfer;
+            player.RemainningAmortization = remainingAmortization;
+
+            _context.Players.Update(player);
+            await _context.SaveChangesAsync();
+        }
 
 
 
