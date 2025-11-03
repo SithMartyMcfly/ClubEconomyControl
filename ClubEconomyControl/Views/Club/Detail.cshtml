@@ -174,9 +174,9 @@
 	</div>
 	<div class="mx-4">
 		<h4 class="sticky-top bg-white bg-opacity-100 text-decoration-underline">Jugadores en plantilla</h4>
-		@if (@Model.Players.Count != 0)
+		@if (@Model.Players != null && Model.Players.Any(p => !p.isSelled))
 		{
-			<p>@Model.Players.Count</p>
+			<p>@Model.Players.Where(p => !p.isSelled).Count()</p>
 		}
 		else
 		{

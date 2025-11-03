@@ -287,7 +287,15 @@ namespace ClubEconomyControl.Controllers
                     return NotFound();
             }
 
+            // Guardo el modelo que he modificado en el context
             await _context.SaveChangesAsync();
+
+            // Recalculo los totales económicos
+            await _salaryCapService.CalculateSalaryCap(model.ClubId);
+
+            // Vuelvo a guardar para que los totales se actualicen
+            await _context.SaveChangesAsync();
+
             return RedirectToAction("Detail", "Club", new { id = model.ClubId });
         }
 
@@ -347,10 +355,13 @@ namespace ClubEconomyControl.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Detail", new { id = clubId });
             }
-            else
+
+            if (clubId.HasValue)
             {
-                return NotFound();
+                await _salaryCapService.CalculateSalaryCap(clubId.Value);
+                await _context.SaveChangesAsync();
             }
+            return RedirectToAction("Detail", new { id = clubId });
         }
 
     }

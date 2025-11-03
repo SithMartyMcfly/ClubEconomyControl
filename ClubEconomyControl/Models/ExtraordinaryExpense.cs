@@ -5,14 +5,19 @@ namespace ClubEconomyControl.Models
 {
     public class ExtraordinaryExpense : IEconomyModel
     {
+
         public int Id { get; set; }
         public ExtraordinaryExpenseType Type { get; set; }
         public decimal Amount { get; set; }
         public string? Description { get; set; }
-        //FKs
+        public int? PlayerTransactionId { get; set; }
+        public string? ReferenceCode { get; set; }
+
+        //Foreign Key
         public int ClubId { get; set; }
         public Club? Club { get; set; }
-        public string? ReferenceCode { get; set; }
+        public PlayerTransaction? PlayerTransaction { get; set; }
+
     }
 }
 

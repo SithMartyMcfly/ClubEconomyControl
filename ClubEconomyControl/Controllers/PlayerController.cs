@@ -63,10 +63,26 @@ namespace ClubEconomyControl.Controllers
 
                 // Añadimos el jugador al context
                 _context.Players.Add(player);
+                await _context.SaveChangesAsync();
+
+                // Se genera una transacción de compra en PlayerTransaction
+                var transaction = new PlayerTransaction
+                {
+                    PlayerId = player.Id,
+                    ClubId = player.ClubId,
+                    type = TransactionType.Buy,
+                    Amount = player.TransferFeeBuy,
+                    ReferenceCode = $"BUY-{player.Id}-{player.ClubId}-{DateTime.Now:yyyyMM}"
+                };
+
+                _context.PlayerTransactions.Add(transaction);
+                await _context.SaveChangesAsync();
 
                 //La compra genera un ExtraordinaryExpense
                 var extraordinaryExpense = new ExtraordinaryExpense()
                 {
+                    PlayerTransactionId = transaction.Id,
+                    ReferenceCode = transaction.ReferenceCode,
                     Type = ExtraordinaryExpenseType.PlayerTransfer,
                     Amount = player.TransferFeeBuy,
                     ClubId = ClubID,
@@ -117,6 +133,7 @@ namespace ClubEconomyControl.Controllers
                 {
                     return NotFound();
                 }
+
                 // Actualizar los campos editables
                 playerToUpdate.Name = player.Name;
                 playerToUpdate.TransferFeeBuy = player.TransferFeeBuy;
@@ -125,6 +142,7 @@ namespace ClubEconomyControl.Controllers
                 playerToUpdate.ContractStartDate = player.ContractStartDate;
                 playerToUpdate.ContractEndDate = player.ContractEndDate;
 
+                // Datos dependientes del servicio Amortización
                 var amortizations = await _amortizationService.CalculateAmotizationAsync(playerToUpdate);
                 playerToUpdate.AnnualExpense = amortizations.annualExpenseAmortization;
                 playerToUpdate.AnualAmortization = amortizations.amortizationTransfer;
@@ -172,22 +190,37 @@ namespace ClubEconomyControl.Controllers
             playerSelled.ContractEndDate = DateTime.Today;
             playerSelled.RemainningAmortization = player.RemainningAmortization;
 
-            //Actualización del límite salarial del club
-            await _salaryCapService.CalculateSalaryCap(ClubId);
+            _context.Players.Update(playerSelled);
+
+            var transaction = new PlayerTransaction()
+            {
+                PlayerId = player.Id,
+                ClubId = player.ClubId,
+                type = TransactionType.Sell, //TODO: Generar tipos
+                Amount = player.TransferFeeSell,
+                ReferenceCode = $"SELL-{player.Id}-{player.ClubId}-{DateTime.Now:yyyyMM}"
+            };
+            _context.PlayerTransactions.Add(transaction);
 
             //La venta genera un ExtraordinaryIncome
+            // TODO: CREO QUE DEBERIAMOS ASIGNAR CON EL REFCODE Y EL ID
             var ExtraordinaryIncome = new ExtraordinaryIncome()
             {
+                ReferenceCode = transaction.ReferenceCode,
                 Type = ExtraordinaryIncomeType.PlayerSale,
                 Amount = (decimal)playerSelled.TransferFeeSell,
                 ClubId = ClubId,
                 Description = "Venta " + playerSelled.Name,
             };
+
             //Añadimos el nuevo ExtraordinaryIncome al contexto
             _context.ExtraordinaryIncomes.Add(ExtraordinaryIncome);
 
             //Salvar Datos
             await _context.SaveChangesAsync();
+
+            //Actualización del límite salarial del club
+            await _salaryCapService.CalculateSalaryCap(ClubId);
 
             //Redirección
             return RedirectToAction("Index", "Club", new { ClubId = ClubId });

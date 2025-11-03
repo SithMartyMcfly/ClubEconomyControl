@@ -15,6 +15,7 @@ namespace ClubEconomyControl.Context
         public DbSet<OrdinaryExpense> OrdinaryExpenses { get; set; }
         public DbSet<ExtraordinaryExpense> ExtraordinaryExpenses { get; set; }
         public DbSet<ExtraordinaryIncome> ExtraordinaryIncomes { get; set; }
+        public DbSet<PlayerTransaction> PlayerTransactions { get; set; }
 
         // Configuraciones adicionales del modelo
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -93,6 +94,12 @@ namespace ClubEconomyControl.Context
             });
 
             modelBuilder.Entity<ExtraordinaryExpense>(entity =>
+            {
+                entity.Property(e => e.Amount)
+                .HasColumnType("decimal(10,2)");
+            });
+
+            modelBuilder.Entity<PlayerTransaction>(entity =>
             {
                 entity.Property(e => e.Amount)
                 .HasColumnType("decimal(10,2)");

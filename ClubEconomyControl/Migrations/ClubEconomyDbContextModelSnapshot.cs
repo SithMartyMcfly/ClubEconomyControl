@@ -62,6 +62,9 @@ namespace ClubEconomyControl.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
 
+                    b.Property<int?>("PlayerTransactionId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ReferenceCode")
                         .HasColumnType("longtext");
 
@@ -72,6 +75,8 @@ namespace ClubEconomyControl.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ClubId");
+
+                    b.HasIndex("PlayerTransactionId");
 
                     b.ToTable("ExtraordinaryExpenses");
                 });
@@ -93,6 +98,9 @@ namespace ClubEconomyControl.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
 
+                    b.Property<int?>("PlayerTransactionId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ReferenceCode")
                         .HasColumnType("longtext");
 
@@ -103,6 +111,8 @@ namespace ClubEconomyControl.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ClubId");
+
+                    b.HasIndex("PlayerTransactionId");
 
                     b.ToTable("ExtraordinaryIncomes");
                 });
@@ -224,6 +234,39 @@ namespace ClubEconomyControl.Migrations
                     b.ToTable("Players");
                 });
 
+            modelBuilder.Entity("ClubEconomyControl.Models.PlayerTransaction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<int>("ClubId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PlayerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ReferenceCode")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("type")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClubId");
+
+                    b.HasIndex("PlayerId");
+
+                    b.ToTable("PlayerTransactions");
+                });
+
             modelBuilder.Entity("ClubEconomyControl.Models.ExtraordinaryExpense", b =>
                 {
                     b.HasOne("ClubEconomyControl.Models.Club", "Club")
@@ -232,7 +275,13 @@ namespace ClubEconomyControl.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ClubEconomyControl.Models.PlayerTransaction", "PlayerTransaction")
+                        .WithMany()
+                        .HasForeignKey("PlayerTransactionId");
+
                     b.Navigation("Club");
+
+                    b.Navigation("PlayerTransaction");
                 });
 
             modelBuilder.Entity("ClubEconomyControl.Models.ExtraordinaryIncome", b =>
@@ -243,7 +292,13 @@ namespace ClubEconomyControl.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ClubEconomyControl.Models.PlayerTransaction", "PlayerTransaction")
+                        .WithMany()
+                        .HasForeignKey("PlayerTransactionId");
+
                     b.Navigation("Club");
+
+                    b.Navigation("PlayerTransaction");
                 });
 
             modelBuilder.Entity("ClubEconomyControl.Models.OrdinaryExpense", b =>
@@ -277,6 +332,25 @@ namespace ClubEconomyControl.Migrations
                         .IsRequired();
 
                     b.Navigation("Club");
+                });
+
+            modelBuilder.Entity("ClubEconomyControl.Models.PlayerTransaction", b =>
+                {
+                    b.HasOne("ClubEconomyControl.Models.Club", "Club")
+                        .WithMany()
+                        .HasForeignKey("ClubId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ClubEconomyControl.Models.Player", "Player")
+                        .WithMany()
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Club");
+
+                    b.Navigation("Player");
                 });
 
             modelBuilder.Entity("ClubEconomyControl.Models.Club", b =>

@@ -35,8 +35,7 @@ namespace ClubEconomyControl.Services
             club.Balance = balance;
 
             club.SquadLimitEconomy = balance - AnnualExpensesSalary;
-            Console.WriteLine("BALANCE " + balance);
-            Console.WriteLine("LIMITE SALARIAL " + club.SquadLimitEconomy);
+
 
             // Operaciones de guardado
             _context.Clubs.Update(club);
