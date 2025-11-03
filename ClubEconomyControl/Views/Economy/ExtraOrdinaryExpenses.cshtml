@@ -1,0 +1,41 @@
+﻿@using ClubEconomyControl.Models
+@model List<ExtraordinaryExpense>;
+
+
+@if (Model != null && Model.Any())
+{
+	<div class="overflow-auto">
+		<h6>Gastos Extraordinarios</h6>
+		<ul>
+			@foreach (var extraordinaryExpense in Model)
+			{
+				<a asp-action="EditEconomy"
+				   asp-controller="Club"
+				   asp-route-type="extrardinaryExpense"
+				   asp-route-id="@extraordinaryExpense.Id"
+				   class="text-decoration-none">@Html.DisplayFor(Model => extraordinaryExpense.Type): @extraordinaryExpense.Amount</a>
+				<br />
+				@if (extraordinaryExpense.Description != null)
+				{
+					<li class="list-unstyled">@Html.DisplayFor(Model => extraordinaryExpense.Description)</li>
+				}
+				<a asp-action="DeleteEconomy"
+				   asp-controller="Club"
+				   asp-route-type="extraOrdinaryExpense"
+				   asp-route-id="@extraordinaryExpense.Id"
+				   data-bs-toggle="modal"
+				   data-bs-target="#confirmModal"
+				   class="btn btn-danger py-0 px-1">
+					Borrar
+				</a>
+				<br />
+			}
+		</ul>
+	</div>
+}
+else
+{
+	<p>No hay gastos extraordinarios</p>
+}
+
+

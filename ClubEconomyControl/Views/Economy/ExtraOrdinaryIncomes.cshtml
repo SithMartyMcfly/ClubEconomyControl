@@ -1,0 +1,42 @@
+﻿@using ClubEconomyControl.Models
+@model List<ExtraordinaryIncome>;
+
+@if (Model != null && Model.Any())
+{
+	<h6>Ingresos Extraordinarios</h6>
+	<div class="overflow-auto">
+		<ul>
+			@foreach (var extraordinaryIncome in Model)
+			{
+				<a asp-action="EditEconomy"
+				   asp-controller="Club"
+				   asp-route-type="extraordinaryIncome"
+				   asp-route-id="@extraordinaryIncome.Id"
+				   class="text-decoration-none">
+					@Html.DisplayFor(Model => extraordinaryIncome.Type): @extraordinaryIncome.Amount
+				</a>
+				<br />
+
+				@if (extraordinaryIncome.Description != null)
+				{
+					<li class="list-unstyled">@Html.DisplayFor(Model => extraordinaryIncome.Description)</li>
+				}
+				<a asp-action="DeleteEconomy"
+				   asp-controller="Club"
+				   asp-route-type="extraOrdinaryIncome"
+				   asp-route-id="@extraordinaryIncome.Id"
+				   data-bs-toggle="modal"
+				   data-bs-target="#confirmModal"
+				   class="btn btn-danger py-0 px-1">
+					Borrar
+				</a>
+				<br />
+
+			}
+		</ul>
+	</div>
+}
+else
+{
+	<p>No hay ingresos extraordinarios</p>
+}

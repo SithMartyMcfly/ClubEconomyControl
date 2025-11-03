@@ -8,17 +8,21 @@
 
   <ItemGroup>
     <Compile Remove="Views\Club\Players\**" />
+    <Compile Remove="Views\Economy\OrdinaryIncomes\**" />
     <Compile Remove="Views\Home\NewFolder\**" />
-    <Compile Remove="Views\NewFolder\**" />
+    <Compile Remove="Views\OrdinaryIncomes\**" />
     <Content Remove="Views\Club\Players\**" />
+    <Content Remove="Views\Economy\OrdinaryIncomes\**" />
     <Content Remove="Views\Home\NewFolder\**" />
-    <Content Remove="Views\NewFolder\**" />
+    <Content Remove="Views\OrdinaryIncomes\**" />
     <EmbeddedResource Remove="Views\Club\Players\**" />
+    <EmbeddedResource Remove="Views\Economy\OrdinaryIncomes\**" />
     <EmbeddedResource Remove="Views\Home\NewFolder\**" />
-    <EmbeddedResource Remove="Views\NewFolder\**" />
+    <EmbeddedResource Remove="Views\OrdinaryIncomes\**" />
     <None Remove="Views\Club\Players\**" />
+    <None Remove="Views\Economy\OrdinaryIncomes\**" />
     <None Remove="Views\Home\NewFolder\**" />
-    <None Remove="Views\NewFolder\**" />
+    <None Remove="Views\OrdinaryIncomes\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,6 +40,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
   </ItemGroup>
 

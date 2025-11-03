@@ -1,9 +1,6 @@
 ﻿@using ClubEconomyControl.Models
 @model Club
 
-
-
-
 <section class="sticky-top text-center mb-4 bg-light bg-opacity-100 border rounded-3">
 	<h2>@Html.DisplayFor(p => p.Name)</h2>
 	<ul class="d-inline-block text-start">
@@ -15,174 +12,39 @@
 	<div>
 		<h4 class="sticky-top bg-white bg-opacity-100 text-decoration-underline">Datos Económicos</h4>
 		<!--Poner tipo de gasto y Cantidad, después proban en BBDD-->
-		@if (Model.OrdinaryIncomes != null && Model.OrdinaryIncomes.Any())
-		{
-			<h6>Ingresos Ordinarios</h6>
-			<div class="overflow-auto">
-				<ul>
-					@foreach (var ordinaryIncome in Model.OrdinaryIncomes)
-					{
-						<!--usamos helper para que muestre la mascara del display del enum-->
-						<a asp-action="EditEconomy"
-						   asp-controller="Club"
-						   asp-route-type="ordinaryIncome"
-						   asp-route-id="@ordinaryIncome.Id"
-						   class="text-decoration-none">
-							@Html.DisplayFor(Model => ordinaryIncome.Type): @ordinaryIncome.Amount
-						</a>
-						<br />
-						@if (ordinaryIncome.Description != null)
-						{
-							<li class="list-unstyled">@Html.DisplayFor(Model => ordinaryIncome.Description)</li>
-						}
-						<a asp-action="DeleteEconomy"
-						   asp-controller="Club"
-						   asp-route-type="ordinaryIncome"
-						   asp-route-id="@ordinaryIncome.Id"
-						   data-bs-toggle="modal"
-						   data-bs-target="#confirmModal"
-						   class="btn btn-danger py-0 px-1">
-							Borrar
-						</a>
-						<br />
-						<hr />
-					}
-				</ul>
-			</div>
-		}
-		else
-		{
-			<p>No hay ingresos ordinarios</p>
-		}
-		@if (Model.OrdinaryExpenses != null && Model.OrdinaryExpenses.Any())
-		{
-			<h6>Gastos Ordinarios</h6>
-			<div class="overflow-auto">
 
-				<ul>
-					@foreach (var ordinaryExpense in Model.OrdinaryExpenses)
-					{
-						<a asp-action="EditEconomy"
-						   asp-controller="Club"
-						   asp-route-type="ordinaryExpense"
-						   asp-route-id="@ordinaryExpense.Id"
-						   class="text-decoration-none">
+		<a asp-controller="Economy"
+		   asp-action="OrdinaryIncomes"
+			asp-route-clubId="@Model.Id"
+			class="btn btn-outline-success btn-sm my-4">
+			Ingresos Ordinarios
+		</a>
 
-							@Html.DisplayFor(Model => ordinaryExpense.Type) : @ordinaryExpense.Amount
-						</a>
-						<br />
+		<a asp-controller="Economy"
+		   asp-action="OrdinaryExpenses"
+		   asp-route-clubId="@Model.Id"
+		   class="btn btn-outline-danger btn-sm my-4">
+			Gastos Ordinarios
+		</a>
 
-						@if (ordinaryExpense.Description != null)
-						{
-							<li class="list-unstyled">@Html.DisplayFor(Model => ordinaryExpense.Description)</li>
-						}
+		<br />
 
-						<a asp-action="DeleteEconomy"
-						   asp-controller="Club"
-						   asp-route-type="ordinaryExpense"
-						   asp-route-id="@ordinaryExpense.Id"
-						   data-bs-toggle="modal"
-						   data-bs-target="#confirmModal"
-						   class="btn btn-danger py-0 px-1">
-							Borrar
-						</a>
-						<br />
-						<hr />
-					}
-				</ul>
-			</div>
-		}
-		else
-		{
-			<p>No hay gastos ordinarios</p>
-		}
-		@if (Model.ExtraordinaryIncomes != null && Model.ExtraordinaryIncomes.Any())
-		{
-			<h6>Ingresos Extraordinarios</h6>
-			<div class="overflow-auto">
-				<ul>
-					@foreach (var extraordinaryIncome in Model.ExtraordinaryIncomes)
-					{
-						<a asp-action="EditEconomy"
-						   asp-controller="Club"
-						   asp-route-type="extraordinaryIncome"
-						   asp-route-id="@extraordinaryIncome.Id"
-						   class="text-decoration-none">
-							@Html.DisplayFor(Model => extraordinaryIncome.Type): @extraordinaryIncome.Amount
-						</a>
-						<br />
+		<a asp-controller="Economy"
+		   asp-action="ExtraOrdinaryIncomes"
+		   asp-route-clubId="@Model.Id"
+		   class="btn btn-outline-success btn-sm my-4">
+			Ingresos Extraordinarios
+		</a>
 
-						@if (extraordinaryIncome.Description != null)
-						{
-							<li class="list-unstyled">@Html.DisplayFor(Model => extraordinaryIncome.Description)</li>
-						}
-						<a asp-action="DeleteEconomy"
-						   asp-controller="Club"
-						   asp-route-type="extraOrdinaryIncome"
-						   asp-route-id="@extraordinaryIncome.Id"
-						   data-bs-toggle="modal"
-						   data-bs-target="#confirmModal"
-						   class="btn btn-danger py-0 px-1">
-							Borrar
-						</a>
-						<br />
-						<hr />
-					}
-				</ul>
-			</div>
-		}
-		else
-		{
-			<p>No hay ingresos extraordinarios</p>
-		}
-		@if (Model.ExtraordinaryExpenses != null && Model.ExtraordinaryExpenses.Any())
-		{
-			<div class="overflow-auto">
-				<h6>Gastos Extraordinarios</h6>
-				<ul>
-					@foreach (var extraordinaryExpense in Model.ExtraordinaryExpenses)
-					{
-						<a asp-action="EditEconomy"
-						   asp-controller="Club"
-						   asp-route-type="extrardinaryExpense"
-						   asp-route-id="@extraordinaryExpense.Id"
-						   class="text-decoration-none">@Html.DisplayFor(Model => extraordinaryExpense.Type): @extraordinaryExpense.Amount</a>
-						<br />
-						@if (extraordinaryExpense.Description != null)
-						{
-							<li class="list-unstyled">@Html.DisplayFor(Model => extraordinaryExpense.Description)</li>
-						}
-						<a asp-action="DeleteEconomy"
-						   asp-controller="Club"
-						   asp-route-type="extraOrdinaryExpense"
-						   asp-route-id="@extraordinaryExpense.Id"
-						   data-bs-toggle="modal"
-						   data-bs-target="#confirmModal"
-						   class="btn btn-danger py-0 px-1">
-							Borrar
-						</a>
-						<br />
-						<hr />
-					}
-				</ul>
-			</div>
-		}
-		else
-		{
-			<p>No hay gastos extraordinarios</p>
-		}
-	</div>
-	<div class="mx-4">
-		<h4 class="sticky-top bg-white bg-opacity-100 text-decoration-underline">Jugadores en plantilla</h4>
-		@if (@Model.Players != null && Model.Players.Any(p => !p.isSelled))
-		{
-			<p>@Model.Players.Where(p => !p.isSelled).Count()</p>
-		}
-		else
-		{
-			<p>No hay jugadores en plantilla</p>
-		}
-	</div>
+		<a asp-controller="Economy"
+		   asp-action="ExtraOrdinaryExpenses"
+		   asp-route-clubId="@Model.Id"
+		   class="btn btn-outline-danger btn-sm my-4">
+			Gastos Extraordinarios
+		</a>
+	
+		
+		
 </section>
 
 
