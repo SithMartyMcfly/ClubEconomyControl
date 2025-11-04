@@ -1,4 +1,5 @@
 ﻿using ClubEconomyControl.Context;
+using ClubEconomyControl.Models;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -14,6 +15,8 @@ namespace ClubEconomyControl.Services
             _context = context;
             _balanceService = balanceService;
         }
+
+
 
         public async Task CalculateSalaryCap(int ClubID)
         {
@@ -37,10 +40,29 @@ namespace ClubEconomyControl.Services
             club.SquadLimitEconomy = balance - AnnualExpensesSalary;
 
 
-            // Operaciones de guardado
+            // Operaciones de actualización
             _context.Clubs.Update(club);
         }
 
+
+
+        // TODO: Implementar método para recalcular Salary Cap EN CASOS DE VENTA
+
+        public async Task<Club> CalculateSalaryCapSale(int ClubId, decimal? amortizationRemaining)
+        {
+
+            var club = await _context.Clubs.
+                Where(club => club.Id == ClubId).
+                FirstOrDefaultAsync();
+
+            await CalculateSalaryCap(ClubId);
+
+            club.SquadLimitEconomy = club.SquadLimitEconomy - amortizationRemaining;
+
+            _context.Update(club);
+            _context.SaveChanges();
+            return club;
+        }
 
     }
 }

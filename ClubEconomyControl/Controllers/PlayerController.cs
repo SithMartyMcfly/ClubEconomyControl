@@ -120,6 +120,7 @@ namespace ClubEconomyControl.Controllers
         }
 
         //POST: Guardar Edición Jugador
+        //  REVISAR LOS GUARDADOS Y UPDATES DE LAS TRANSACCIONES Y GASTOS EXTRAORDINARIOS
         [HttpPost]
         public async Task<IActionResult> SaveEditPlayer(Player player, int ClubId)
         {
@@ -129,23 +130,45 @@ namespace ClubEconomyControl.Controllers
                 var playerToUpdate = await _context.Players
                     .FirstOrDefaultAsync(p => p.Id == player.Id && p.ClubId == ClubId);
 
-                if (playerToUpdate == null)
-                {
-                    return NotFound();
-                }
-
                 // Actualizar los campos editables
-                playerToUpdate.Name = player.Name;
-                playerToUpdate.TransferFeeBuy = player.TransferFeeBuy;
-                playerToUpdate.Salary = player.Salary;
-                playerToUpdate.BoughtFromClub = player.BoughtFromClub;
-                playerToUpdate.ContractStartDate = player.ContractStartDate;
-                playerToUpdate.ContractEndDate = player.ContractEndDate;
+                if (playerToUpdate != null)
+                {
+                    playerToUpdate.Name = player.Name;
+                    playerToUpdate.TransferFeeBuy = player.TransferFeeBuy;
+                    playerToUpdate.Salary = player.Salary;
+                    playerToUpdate.BoughtFromClub = player.BoughtFromClub;
+                    playerToUpdate.ContractStartDate = player.ContractStartDate;
+                    playerToUpdate.ContractEndDate = player.ContractEndDate;
+                }
 
                 // Datos dependientes del servicio Amortización
                 var amortizations = await _amortizationService.CalculateAmotizationAsync(playerToUpdate);
                 playerToUpdate.AnnualExpense = amortizations.annualExpenseAmortization;
                 playerToUpdate.AnualAmortization = amortizations.amortizationTransfer;
+                _context.Update(playerToUpdate);
+                await _context.SaveChangesAsync();
+
+                // Actualizar la PlayerTransaction
+                var playertransaction = await _context.PlayerTransactions
+                    .FirstOrDefaultAsync(pt => pt.PlayerId == player.Id && pt.ClubId == ClubId);
+
+                if (playertransaction != null)
+                {
+                    playertransaction.Amount = player.TransferFeeBuy;
+                    _context.PlayerTransactions.Update(playertransaction);
+                }
+
+                // Actualizar ExtraordinaryExpense
+                var extraordinaryExpense = await _context.ExtraordinaryExpenses
+                    .FirstOrDefaultAsync(ee => ee.ReferenceCode == playertransaction.ReferenceCode);
+
+                if (extraordinaryExpense != null)
+                {
+                    extraordinaryExpense.Amount = player.TransferFeeBuy;
+                    extraordinaryExpense.Description = $"Editado compra de {playerToUpdate.Name}";
+                    _context.ExtraordinaryExpenses.Update(extraordinaryExpense);
+                }
+
 
                 // Guardar los cambios en la base de datos
                 await _context.SaveChangesAsync();
@@ -216,11 +239,13 @@ namespace ClubEconomyControl.Controllers
             //Añadimos el nuevo ExtraordinaryIncome al contexto
             _context.ExtraordinaryIncomes.Add(ExtraordinaryIncome);
 
+            //Actualización del límite salarial del club
+            var club = await _salaryCapService.CalculateSalaryCapSale(ClubId, player.RemainningAmortization);
+
             //Salvar Datos
             await _context.SaveChangesAsync();
 
-            //Actualización del límite salarial del club
-            await _salaryCapService.CalculateSalaryCap(ClubId);
+            Console.WriteLine(club.SquadLimitEconomy + "LIMITE SALARIAL");
 
             //Redirección
             return RedirectToAction("Index", "Club", new { ClubId = ClubId });

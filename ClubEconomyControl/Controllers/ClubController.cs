@@ -101,11 +101,6 @@ namespace ClubEconomyControl.Controllers
                 .Include(c => c.ExtraordinaryExpenses)
                 .Include(c => c.Players)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            //Aplicamos en la vista detalles la actualización de la economía
-            await _salaryCapService.CalculateSalaryCap(club.Id);
-            await _context.SaveChangesAsync();
-
-
             return View(club);
         }
 
@@ -357,7 +352,6 @@ namespace ClubEconomyControl.Controllers
             {
                 _context.Remove(recordEconomy);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Detail", new { id = clubId });
             }
 
             if (clubId.HasValue)

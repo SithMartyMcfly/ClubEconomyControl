@@ -53,7 +53,7 @@ namespace ClubEconomyControl.Services
                 Math.Round(amortizationTransfer, 2));
         }
 
-
+        // Calcula la amortización restante del jugador
         public decimal CalculateRemainingAmortization(Player player)
         {
             // Control de excepciones
@@ -88,6 +88,7 @@ namespace ClubEconomyControl.Services
             return Math.Round(remainingAmortization, 2);
         }
 
+        // Actualiza los valores de las amortizaciones
         public async Task UpdateAmortizationValuesAsnync(Player player)
         {
             if (player == null)

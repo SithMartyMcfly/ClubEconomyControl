@@ -59,8 +59,8 @@
                     data-player-name="@player.Name"
                     data-club-id="@ViewBag.ClubId"
                     data-player-remainingAmortization ="@player.RemainningAmortization"
-                    data-player-annualExpense ="@player.AnnualExpense"
-                    >Vender Jugador</a>
+                    data-player-annualExpense ="@player.AnnualExpense">
+                    Vender Jugador</a>
 
                 </td>
                 <td>
@@ -93,7 +93,7 @@
                                             <input type="hidden" id="annualExpense" name="annualExpense" value="" />
                                         <div class="mb-3">
                                             <label for="TransferFeeSell" class="form-label">Precio Venta</label>
-                                            <input type="number" name="TransferFeeSell" class="form-control" required/>
+                                            <input type="number" name="TransferFeeSell" class="form-control" step="0.01" required/>
                                         </div>
                                         <div class="mb-3">
                                             <label for="SoldToClub" class="form-label">Club destino</label>
