@@ -61,6 +61,7 @@ namespace ClubEconomyControl.Services
 
             _context.Update(club);
             _context.SaveChanges();
+
             return club;
         }
 

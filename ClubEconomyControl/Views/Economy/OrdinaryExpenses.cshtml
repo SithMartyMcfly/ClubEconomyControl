@@ -11,7 +11,7 @@
 			@foreach (var ordinaryExpense in Model)
 			{
 				<a asp-action="EditEconomy"
-				   asp-controller="Club"
+				   asp-controller="Economy"
 				   asp-route-type="ordinaryExpense"
 				   asp-route-id="@ordinaryExpense.Id"
 				   class="text-decoration-none">
@@ -26,7 +26,7 @@
 				}
 
 				<a asp-action="DeleteEconomy"
-				   asp-controller="Club"
+				   asp-controller="Economy"
 				   asp-route-type="ordinaryExpense"
 				   asp-route-id="@ordinaryExpense.Id"
 				   data-bs-toggle="modal"

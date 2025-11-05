@@ -10,7 +10,7 @@
 			{
 				<!--usamos helper para que muestre la mascara del display del enum-->
 				<a asp-action="EditEconomy"
-				   asp-controller="Club"
+				   asp-controller="Economy"
 				   asp-route-type="ordinaryIncome"
 				   asp-route-id="@ordinaryIncome.Id"
 				   class="text-decoration-none">
@@ -22,7 +22,7 @@
 					<li class="list-unstyled">@Html.DisplayFor(Model => ordinaryIncome.Description)</li>
 				}
 				<a asp-action="DeleteEconomy"
-				   asp-controller="Club"
+				   asp-controller="Economy"
 				   asp-route-type="ordinaryIncome"
 				   asp-route-id="@ordinaryIncome.Id"
 				   data-bs-toggle="modal"

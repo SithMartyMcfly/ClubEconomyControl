@@ -25,9 +25,9 @@
         <div class="alert alert-danger">No se ha podido determinar el modelo económico a editar.</div>
         return;
     }
-
-    var modelType = Model.ModelType;/*Es el valor que guarda en ViewModel el atributo ModelType lo guarda como String por eso podemos
-                                    seguir usandolo en todos los Switch que van siguiendo*/
+   
+    var modelType = Model.ModelType;  /*Es el valor que guarda en ViewModel 
+    el atributo ModelType lo guarda como String por eso podemos seguir usandolo en todos los Switch que van siguiendo*/
 
     
     var prefix = modelType switch
@@ -61,7 +61,7 @@
     };
 }
 
-<form asp-action="PutEconomy" asp-controller="Club" method="post">
+<form asp-action="PutEconomy" asp-controller="Economy" method="post">
     @Html.AntiForgeryToken()
 
     <!-- Hidden fields for routing and binding -->

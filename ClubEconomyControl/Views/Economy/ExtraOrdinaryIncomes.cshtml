@@ -9,7 +9,7 @@
 			@foreach (var extraordinaryIncome in Model)
 			{
 				<a asp-action="EditEconomy"
-				   asp-controller="Club"
+				   asp-controller="Economy"
 				   asp-route-type="extraordinaryIncome"
 				   asp-route-id="@extraordinaryIncome.Id"
 				   class="text-decoration-none">
@@ -22,7 +22,7 @@
 					<li class="list-unstyled">@Html.DisplayFor(Model => extraordinaryIncome.Description)</li>
 				}
 				<a asp-action="DeleteEconomy"
-				   asp-controller="Club"
+				   asp-controller="Economy"
 				   asp-route-type="extraOrdinaryIncome"
 				   asp-route-id="@extraordinaryIncome.Id"
 				   data-bs-toggle="modal"
@@ -39,4 +39,34 @@
 else
 {
 	<p>No hay ingresos extraordinarios</p>
+}
+
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="confirmModalLabel">Confirmación</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+			</div>
+			<div class="modal-body">
+				<p>¿Estás seguro que quieres borrar el registro?</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+				<a id="confirmDeleteBtn" class="btn btn-danger">Confirmar</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<script>
+		var confirmModal = document.getElementById('confirmModal');
+		confirmModal.addEventListener('show.bs.modal', function (event) {
+			var button = event.relatedTarget;
+			var deleteUrl = button.getAttribute('href');
+			var confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+			confirmDeleteBtn.setAttribute('href', deleteUrl);
+		});
+	</script>
 }

@@ -239,7 +239,10 @@ namespace ClubEconomyControl.Controllers
             //Añadimos el nuevo ExtraordinaryIncome al contexto
             _context.ExtraordinaryIncomes.Add(ExtraordinaryIncome);
 
-            //Actualización del límite salarial del club
+            //Actualización del límite salarial del club y el nuevo balance
+            // Primero guardamos en BBDD todos los cambios en las entidades
+            await _context.SaveChangesAsync();
+            // Luego llamamos al servicio de SalaryCap para recalcular el SquadLimitEconomy
             var club = await _salaryCapService.CalculateSalaryCapSale(ClubId, player.RemainningAmortization);
 
             //Salvar Datos
