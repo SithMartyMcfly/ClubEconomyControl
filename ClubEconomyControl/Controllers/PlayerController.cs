@@ -19,6 +19,20 @@ namespace ClubEconomyControl.Controllers
             _salaryCapService = salaryCapService;
         }
 
+        // Get: /Club/Players/ViewPlayer
+        [HttpGet]
+        public async Task<IActionResult> Detail(int? id)
+        {
+            if (id == null)
+                return NotFound();
+            var player = await _context.Players.FindAsync(id);
+            if (player == null)
+                return NotFound();
+            return View(player);
+        }
+
+
+        // GUARDAR JUGADORES
         // Get: /Club/Players/CreatePlayer
         [HttpGet]
         public IActionResult CreatePlayer(int ClubId)
@@ -31,17 +45,6 @@ namespace ClubEconomyControl.Controllers
             return View();
         }
 
-        // Get: /Club/Players/ViewPlayer
-        [HttpGet]
-        public async Task<IActionResult> Detail(int? id)
-        {
-            if (id == null)
-                return NotFound();
-            var player = await _context.Players.FindAsync(id);
-            if (player == null)
-                return NotFound();
-            return View(player);
-        }
 
         // Post: /Player/SavePlayer
         [HttpPost]
@@ -151,6 +154,19 @@ namespace ClubEconomyControl.Controllers
             }
         }
 
+        // Get: Vista edición jugador
+        [HttpGet]
+        public async Task<IActionResult> EditPlayer(int id)
+        {
+            var player = await _context.Players.FindAsync(id);
+            if (player == null)
+            {
+                return NotFound();
+            }
+            return View(player);
+        }
+
+
         //POST: Guardar Edición Jugador
         //  REVISAR LOS GUARDADOS Y UPDATES DE LAS TRANSACCIONES Y GASTOS EXTRAORDINARIOS
         [HttpPost]
@@ -218,6 +234,7 @@ namespace ClubEconomyControl.Controllers
             }
         }
 
+
         // Post: Método Venta jugador
         [HttpPost]
         public async Task<IActionResult> SellPlayer(int ClubId, Player player)
@@ -260,7 +277,6 @@ namespace ClubEconomyControl.Controllers
             _context.PlayerTransactions.Add(transaction);
 
             //La venta genera un ExtraordinaryIncome
-            // TODO: CREO QUE DEBERIAMOS ASIGNAR CON EL REFCODE Y EL ID
             var ExtraordinaryIncome = new ExtraordinaryIncome()
             {
                 ReferenceCode = transaction.ReferenceCode,
@@ -288,6 +304,14 @@ namespace ClubEconomyControl.Controllers
             return RedirectToAction("Index", "Club", new { ClubId = ClubId });
         }
 
+        // RENOVACIÓN
+
+        //
+        [HttpGet]
+        public async Task<IActionResult> RenewPlayer(Player player)
+        {
+            return View(player);
+        }
 
     }
 

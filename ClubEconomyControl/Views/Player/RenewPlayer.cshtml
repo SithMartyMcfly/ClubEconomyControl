@@ -2,11 +2,13 @@
 @model Player;
 
 @{
-	var player = Model;
+	var name = Model.Name;
+	var playerId = Model.Id;
+	var clubId = Model.ClubId;
 }
 
 
-<h1>Editar Jugador: @Model.Name</h1>
+<h1>Renovar @name</h1>
 <form asp-action="SaveEditPlayer" asp-controller="Player" method="post">
 	<div class="form-group">
 		<label asp-for="Name" class="control-label"></label>
@@ -39,11 +41,9 @@
 		<span asp-validation-for="ContractEndDate" class="text-danger"></span>
 	</div>
 
-	<input type="hidden" asp-for="Id" value="@player.Id" />
-	<input type="hidden" asp-for="ClubId" value="@player.ClubId" />
-	<button
-		type="submit" class="btn btn-primary mt-2"
-	>Editar Jugador</button>
+	<input type="hidden" asp-for="Id" value="@playerId" />
+	<input type="hidden" asp-for="ClubId" value="@clubId" />
+	<button type="submit" class="btn btn-primary mt-2">
+		Editar Jugador
+	</button>
 </form>
-
-
