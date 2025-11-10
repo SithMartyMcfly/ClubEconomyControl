@@ -7,13 +7,15 @@ namespace ClubEconomyControl.Models
         public int Id { get; set; }
         public int PlayerId { get; set; }
         public int ClubId { get; set; }
-        public TransactionType type { get; set; }
+        [Required(ErrorMessage = "es obligatoria una transacción")]
+        [Display(Name = "Tipo operación")]
+        public TransactionType? Type { get; set; }
         public decimal? Amount { get; set; }
-        public string ReferenceCode { get; set; }
+        public string? ReferenceCode { get; set; }
 
         // Foreign Key
-        public Player Player { get; set; }
-        public Club Club { get; set; }
+        public Player? Player { get; set; }
+        public Club? Club { get; set; }
     }
 
     public enum TransactionType

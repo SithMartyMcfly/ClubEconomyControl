@@ -2,79 +2,65 @@
 @model Club
 
 <section class="sticky-top text-center mb-4 bg-light bg-opacity-100 border rounded-3">
-	<h2>@Html.DisplayFor(p => p.Name)</h2>
-	<ul class="d-inline-block text-start">
-		<li>Balance: @Model.Balance</li>
-		<li>Limite Salarial: @Model.SquadLimitEconomy</li>
-	</ul>
+	<h2>@Html.DisplayFor(p => p.Name)</h2>	
+		<div class="money">Balance: @Model.Balance</div>
+		<div class="money">Limite Salarial: @Model.SquadLimitEconomy</div>
 </section>
-<section class="d-flex flex-row justify-content-center h-25 overflow-auto" style=" max-height: calc(100vh - 240px); overflow-y: auto">
+<h4 class="sticky-top bg-white text-decoration-underline text-center mt-5 mb-3">Datos Económicos</h4>
+<section class="d-flex flex-row justify-content-center h-25" style="width:100%">
 	<div>
-		<h4 class="sticky-top bg-white bg-opacity-100 text-decoration-underline">Datos Económicos</h4>
 		<!--Poner tipo de gasto y Cantidad, después proban en BBDD-->
+		<div class="d-flex flex-row justify-content-evenly">
+			<a asp-controller="Economy"
+			   asp-action="OrdinaryIncomes"
+				asp-route-clubId="@Model.Id"
+				class="btn btn-outline-success btn-sm my-3 mx-2">
+				Ingresos Ordinarios
+			</a>
 
-		<a asp-controller="Economy"
-		   asp-action="OrdinaryIncomes"
-			asp-route-clubId="@Model.Id"
-			class="btn btn-outline-success btn-sm my-4">
-			Ingresos Ordinarios
-		</a>
+			<a asp-controller="Economy"
+			   asp-action="OrdinaryExpenses"
+			   asp-route-clubId="@Model.Id"
+			   class="btn btn-outline-danger btn-sm my-3 mx-2">
+				Gastos Ordinarios
+			</a>
+		</div>
+		<div class="d-flex flex-row justify-content-evenly">
+			<a asp-controller="Economy"
+			   asp-action="ExtraOrdinaryIncomes"
+			   asp-route-clubId="@Model.Id"
+			   class="btn btn-outline-success btn-sm my-3 mx-2">
+				Ingresos Extraordinarios
+			</a>
 
-		<a asp-controller="Economy"
-		   asp-action="OrdinaryExpenses"
-		   asp-route-clubId="@Model.Id"
-		   class="btn btn-outline-danger btn-sm my-4">
-			Gastos Ordinarios
-		</a>
-
-		<br />
-
-		<a asp-controller="Economy"
-		   asp-action="ExtraOrdinaryIncomes"
-		   asp-route-clubId="@Model.Id"
-		   class="btn btn-outline-success btn-sm my-4">
-			Ingresos Extraordinarios
-		</a>
-
-		<a asp-controller="Economy"
-		   asp-action="ExtraOrdinaryExpenses"
-		   asp-route-clubId="@Model.Id"
-		   class="btn btn-outline-danger btn-sm my-4">
-			Gastos Extraordinarios
-		</a>
+			<a asp-controller="Economy"
+			   asp-action="ExtraOrdinaryExpenses"
+			   asp-route-clubId="@Model.Id"
+			   class="btn btn-outline-danger btn-sm my-3 mx-2">
+				Gastos Extraordinarios
+			</a>
+		</div>
 	
 		
 		
 </section>
 
 
-<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="confirmModalLabel">Confirmación</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-			</div>
-			<div class="modal-body">
-				<p>¿Estás seguro que quieres borrar el registro?</p>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-				<a id="confirmDeleteBtn" class="btn btn-danger">Confirmar</a>
-			</div>
-		</div>
-	</div>
-</div>
-
 @section Scripts {
 	<script>
-		var confirmModal = document.getElementById('confirmModal');
-		confirmModal.addEventListener('show.bs.modal', function (event) {
-			var button = event.relatedTarget;
-			var deleteUrl = button.getAttribute('href');
-			var confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-			confirmDeleteBtn.setAttribute('href', deleteUrl);
-		});
+
+		const moneyItems = document.querySelectorAll('.money');
+
+		moneyItems.forEach (e => {
+			// Limpiamos el contenido del Tag
+			const innerValue = parseFloat(e.textContent.replace(/[^\d.-]/g, ''));
+			if (valor < 0) {
+			e.classList.add('text-danger');
+			}
+		}) 
+
+		
+		
 	</script>
 }
 

@@ -81,7 +81,8 @@ namespace ClubEconomyControl.Controllers
             // Añadimos a cada jugador su Amortización
             foreach (var player in players)
             {
-                var remaining = _amortizationService.UpdateAmortizationValuesAsnync(player);
+                await _amortizationService.UpdateAmortizationValuesAsnync(player);
+                dictionaryAmortizations[player.Id] = player.RemainningAmortization ?? 0;
             }
 
             //Retornamos la lista de jugadores

@@ -42,6 +42,7 @@ namespace ClubEconomyControl.Services
 
             // Operaciones de actualización
             _context.Clubs.Update(club);
+            await _context.SaveChangesAsync();
         }
 
 
@@ -60,7 +61,7 @@ namespace ClubEconomyControl.Services
             club.SquadLimitEconomy = club.SquadLimitEconomy - amortizationRemaining;
 
             _context.Update(club);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return club;
         }

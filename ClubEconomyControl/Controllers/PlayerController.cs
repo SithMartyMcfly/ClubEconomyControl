@@ -1,6 +1,6 @@
-﻿using System.Text.Json;
-using ClubEconomyControl.Context;
+﻿using ClubEconomyControl.Context;
 using ClubEconomyControl.Models;
+using ClubEconomyControl.Models.ViewModels;
 using ClubEconomyControl.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +23,11 @@ namespace ClubEconomyControl.Controllers
         [HttpGet]
         public IActionResult CreatePlayer(int ClubId)
         {
+            var model = new TransactionViewModel
+            {
+                ClubId = ClubId,
+                player = new Player() // inicializar para que asp-for="player.*" no falle
+            };
             return View();
         }
 
@@ -40,83 +45,110 @@ namespace ClubEconomyControl.Controllers
 
         // Post: /Player/SavePlayer
         [HttpPost]
-        public async Task<IActionResult> SavePlayer(Player player, int ClubID)
+
+        //REPASAR EL AÑADIDO DEL VIEWMODEL NUEVO
+        public async Task<IActionResult> SavePlayer(TransactionViewModel model, int ClubID)
         {
-            Console.WriteLine(JsonSerializer.Serialize(player));
-            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+
+            // Validar que el club existe en la base de datos
+            var clubExists = await _context.Clubs.AnyAsync(c => c.Id == ClubID);
+            if (!clubExists)
             {
-
-                Console.WriteLine($"Error de validación: {error.ErrorMessage}");
+                ModelState.AddModelError("ClubId", "El club especificado no existe.");
+                return View("CreatePlayer", model);
             }
-            if (ModelState.IsValid)
+
+            // Inicializar el jugador si viene null
+            model.player ??= new Player();
+
+            // Asignar ClubId al ViewModel y al jugador
+            model.ClubId = ClubID;
+            model.player.ClubId = ClubID;
+
+            // Validar manualmente el objeto anidado
+            TryValidateModel(model.player);
+
+            // Mostrar errores de validación en consola
+            foreach (var entry in ModelState)
             {
-                // Controlamos datos del jugador y sus amortizaciones
-                player.ClubId = ClubID;
-                player.isSelled = false;
-                player.BoughtFromClub ??= "Libre";
-
-                // Pasamos el servicio amortizaciones y recogemos sus datos en el modelo Player
-                var amortizations = await _amortizationService.CalculateAmotizationAsync(player);
-                player.AnnualExpense = amortizations.annualExpenseAmortization;
-                player.AnualAmortization = amortizations.amortizationTransfer;
-                player.RemainningAmortization = _amortizationService.CalculateRemainingAmortization(player);
-
-                // Añadimos el jugador al context
-                _context.Players.Add(player);
-                await _context.SaveChangesAsync();
-
-                // Se genera una transacción de compra en PlayerTransaction
-                var transaction = new PlayerTransaction
+                foreach (var error in entry.Value.Errors)
                 {
-                    PlayerId = player.Id,
-                    ClubId = player.ClubId,
-                    type = TransactionType.Buy,
-                    Amount = player.TransferFeeBuy,
-                    ReferenceCode = $"BUY-{player.Id}-{player.ClubId}-{DateTime.Now:yyyyMM}"
-                };
-
-                _context.PlayerTransactions.Add(transaction);
-                await _context.SaveChangesAsync();
-
-                //La compra genera un ExtraordinaryExpense
-                var extraordinaryExpense = new ExtraordinaryExpense()
-                {
-                    PlayerTransactionId = transaction.Id,
-                    ReferenceCode = transaction.ReferenceCode,
-                    Type = ExtraordinaryExpenseType.PlayerTransfer,
-                    Amount = player.TransferFeeBuy,
-                    ClubId = ClubID,
-                    Description = "Compra " + player.Name,
-                };
-
-                //Añadimos el nuevo ExtraordinaryExpense al contexto
-                _context.ExtraordinaryExpenses.Add(extraordinaryExpense);
-
-                // Pasamos el servicio de SalaryCap para actualizar el SquadLimitEconomy
-                await _context.SaveChangesAsync();
-                await _salaryCapService.CalculateSalaryCap(ClubID);
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction("SquadList", "Club", new { id = ClubID });
+                    Console.WriteLine($"Campo: {entry.Key} → Error: {error.ErrorMessage}");
+                }
             }
-            else
+
+            if (!ModelState.IsValid)
             {
                 Console.WriteLine("Error en guardado");
-                return View("CreatePlayer");
+                return View("CreatePlayer", model);
             }
-        }
 
-        //GET: Edición Jugador
-        [HttpGet]
-        public async Task<IActionResult> EditPlayer(int id, int ClubId)
-        {
-            var player = await _context.Players.FindAsync(id);
-            if (player == null)
+            // Iniciamos una transacción en la BBDD
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            // Inicializar campos del jugador
+            model.player.isSelled = false;
+            model.player.BoughtFromClub ??= "Libre";
+
+            // Calcular amortizaciones
+            var amortizations = await _amortizationService.CalculateAmotizationAsync(model.player);
+            model.player.AnnualExpense = amortizations.annualExpenseAmortization;
+            model.player.AnualAmortization = amortizations.amortizationTransfer;
+            model.player.RemainningAmortization = _amortizationService.CalculateRemainingAmortization(model.player);
+
+            try
             {
-                return NotFound();
-            }
-            return View("EditPlayer", player);
+                // Guardar jugador
+                _context.Players.Add(model.player);
+                await _context.SaveChangesAsync(); // model.player.Id ya disponible
 
+                // Crear transacción
+                var transactionEntity = new PlayerTransaction
+                {
+                    PlayerId = model.player.Id,
+                    ClubId = model.player.ClubId,
+                    Type = model.Type,
+                    Amount = model.player.TransferFeeBuy,
+                    ReferenceCode = $"BUY-{model.player.Id}-{model.player.ClubId}-{DateTime.Now:yyyyMM}"
+                };
+
+                _context.PlayerTransactions.Add(transactionEntity);
+                await _context.SaveChangesAsync();
+
+                // Crear gasto extraordinario
+                var extraordinaryExpense = new ExtraordinaryExpense
+                {
+                    PlayerTransactionId = transactionEntity.Id,
+                    ReferenceCode = transactionEntity.ReferenceCode,
+                    Type = ExtraordinaryExpenseType.PlayerTransfer,
+                    Amount = model.player.TransferFeeBuy,
+                    ClubId = ClubID,
+                    Description = $"Compra {model.player.Name}"
+                };
+
+                // Guardar transacción y gasto
+                _context.ExtraordinaryExpenses.Add(extraordinaryExpense);
+                await _context.SaveChangesAsync();
+
+                // Actualizar límite salarial
+                await _salaryCapService.CalculateSalaryCap(ClubID);
+                // await _context.SaveChangesAsync();
+
+                // Si todo va bien guarda en la BBDD
+                await transaction.CommitAsync();
+                // Redirigir a la lista de plantilla
+                return RedirectToAction("SquadList", "Club", new { id = ClubID });
+
+            }
+            catch (Exception ex)
+            {
+                // Si no va bien todo, revierte los guardados realizados
+                await transaction.RollbackAsync();
+                Console.WriteLine($"Error en transacción: {ex.Message}");
+                ModelState.AddModelError("", "Ocurrió un error al guardar los datos.");
+                return View("CreatePlayer", model);
+
+            }
         }
 
         //POST: Guardar Edición Jugador
@@ -130,22 +162,24 @@ namespace ClubEconomyControl.Controllers
                 var playerToUpdate = await _context.Players
                     .FirstOrDefaultAsync(p => p.Id == player.Id && p.ClubId == ClubId);
 
-                // Actualizar los campos editables
-                if (playerToUpdate != null)
-                {
-                    playerToUpdate.Name = player.Name;
-                    playerToUpdate.TransferFeeBuy = player.TransferFeeBuy;
-                    playerToUpdate.Salary = player.Salary;
-                    playerToUpdate.BoughtFromClub = player.BoughtFromClub;
-                    playerToUpdate.ContractStartDate = player.ContractStartDate;
-                    playerToUpdate.ContractEndDate = player.ContractEndDate;
-                }
+                if (playerToUpdate == null)
+                    return NotFound();
+
+                // Actualizar jugador
+                playerToUpdate.Name = player.Name;
+                playerToUpdate.TransferFeeBuy = player.TransferFeeBuy;
+                playerToUpdate.Salary = player.Salary;
+                playerToUpdate.BoughtFromClub = player.BoughtFromClub;
+                playerToUpdate.ContractStartDate = player.ContractStartDate;
+                playerToUpdate.ContractEndDate = player.ContractEndDate;
+
 
                 // Datos dependientes del servicio Amortización
                 var amortizations = await _amortizationService.CalculateAmotizationAsync(playerToUpdate);
                 playerToUpdate.AnnualExpense = amortizations.annualExpenseAmortization;
                 playerToUpdate.AnualAmortization = amortizations.amortizationTransfer;
-                _context.Update(playerToUpdate);
+
+                _context.Players.Update(playerToUpdate);
                 await _context.SaveChangesAsync();
 
                 // Actualizar la PlayerTransaction
@@ -219,7 +253,7 @@ namespace ClubEconomyControl.Controllers
             {
                 PlayerId = player.Id,
                 ClubId = player.ClubId,
-                type = TransactionType.Sell, //TODO: Generar tipos
+                Type = TransactionType.Sell, //TODO: Generar tipos
                 Amount = player.TransferFeeSell,
                 ReferenceCode = $"SELL-{player.Id}-{player.ClubId}-{DateTime.Now:yyyyMM}"
             };

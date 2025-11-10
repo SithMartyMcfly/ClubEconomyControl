@@ -1,39 +1,57 @@
 ﻿@using ClubEconomyControl.Models;
-@model Player;
+@model ClubEconomyControl.Models.ViewModels.TransactionViewModel;
+
+@{
+	// Filtramos para que solo aparezcan las operaciones de Compra y Cesión
+	var tiposFiltrados = Html.GetEnumSelectList<TransactionType>()
+				.Where(i => i.Value != ((int)TransactionType.Renew).ToString() && i.Value != ((int)TransactionType.Sell).ToString())
+				.ToList();
+}
 
 <h1>Crear Nuevo Jugador</h1>
 <form asp-action="SavePlayer" method="post">
 	<div class="form-group">
-		<label asp-for="Name" class="control-label"></label>
-		<input asp-for="Name" class="form-control" />
-		<span asp-validation-for="Name" class="text-danger"></span>
+		<label asp-for="player.Name" class="control-label"></label>
+		<input asp-for="player.Name" class="form-control" />
+		<span asp-validation-for="player.Name" class="text-danger"></span>
+	</div>
+	<div class="form-group my-1">	
+		<select asp-for="Type" asp-items="tiposFiltrados">
+			<option value="">-- Selecciona un tipo de operación --</option>
+		</select>
+			<span asp-validation-for="Type" class="text-danger"></span>
+	</div>
+
+	<div class="form-group">
+		<label asp-for="player.TransferFeeBuy" class="control-label"></label>
+		<input asp-for="player.TransferFeeBuy" class="form-control" type="number" step="0.01" />
+		<span asp-validation-for="player.TransferFeeBuy" class="text-danger"></span>
 	</div>
 	<div class="form-group">
-		<label asp-for="TransferFeeBuy" class="control-label"></label>
-		<input asp-for="TransferFeeBuy" class="form-control" type="number" step="0.01"/>
-		<span asp-validation-for="TransferFeeBuy" class="text-danger"></span>
+		<label asp-for="player.Salary" class="control-label"></label>
+		<input asp-for="player.Salary" class="form-control" type="number" step="0.01" />
+		<span asp-validation-for="player.Salary" class="text-danger"></span>
 	</div>
 	<div class="form-group">
-		<label asp-for="Salary" class="control-label"></label>
-		<input asp-for="Salary" class="form-control" type="number" step="0.01" />
-		<span asp-validation-for="Salary" class="text-danger"></span>
+		<label asp-for="player.BoughtFromClub" class="control-label"></label>
+		<input asp-for="player.BoughtFromClub" class="form-control" />
+		<span asp-validation-for="player.BoughtFromClub" class="text-danger"></span>
 	</div>
 	<div class="form-group">
-		<label asp-for="BoughtFromClub" class="control-label"></label>
-		<input asp-for="BoughtFromClub" class="form-control"/>
-		<span asp-validation-for="BoughtFromClub" class="text-danger"></span>
+		<label asp-for="player.ContractStartDate" class="control-label"></label>
+		<input asp-for="player.ContractStartDate" class="form-control" type="date" />
+		<span asp-validation-for="player.ContractStartDate" class="text-danger"></span>
 	</div>
 	<div class="form-group">
-		<label asp-for="ContractStartDate" class="control-label"></label>
-		<input asp-for="ContractStartDate" class="form-control" type="date"/>
-		<span asp-validation-for="ContractStartDate" class="text-danger"></span>
-	</div>
-	<div class="form-group">
-		<label asp-for="ContractEndDate" class="control-label"></label>
-		<input asp-for="ContractEndDate" class="form-control" type="date"/>
-		<span asp-validation-for="ContractEndDate" class="text-danger"></span>
+		<label asp-for="player.ContractEndDate" class="control-label"></label>
+		<input asp-for="player.ContractEndDate" class="form-control" type="date" />
+		<span asp-validation-for="player.ContractEndDate" class="text-danger"></span>
 	</div>
 
 	<input type="hidden" asp-for="ClubId" />
 	<button type="submit" class="btn btn-primary mt-2">Agregar Jugador</button>
 </form>
+
+@section Scripts {
+	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
